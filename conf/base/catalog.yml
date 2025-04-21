@@ -21,16 +21,12 @@ hotel_reviews:
     encoding: utf-8
 
 cleaned_reviews:
-  type: kedro_datasets.pandas.ParquetDataSet
-  filepath: data/02_intermediate/cleaned_reviews.parquet
-  save_args:
-    engine: pyarrow
+  type: pandas.CSVDataset
+  filepath: data/02_intermediate/cleaned_reviews.csv
 
 sentiment_analysis:
-  type: kedro_datasets.pandas.ParquetDataSet
-  filepath: data/03_primary/sentiment_analysis.parquet
-  save_args:
-    engine: pyarrow
+  type: pandas.CSVDataset
+  filepath: data/03_primary/sentiment_analysis.csv
 
 
 # preprocessed_companies:

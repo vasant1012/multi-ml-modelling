@@ -173,3 +173,8 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 myenv/
+
+
+# output csv
+data/02_intermediate/*.csv
+data/03_primary/*.csv
