@@ -34,4 +34,4 @@ This combined model provides a holistic understanding of customer feedback, help
 - Improve service quality by identifying sentiment and aspect-level insights.
 - Predict and validate customer ratings automatically.
 - Quickly assess customer opinions through summaries.
-- Prioritize resources based on emotional analysis and rating trends.
+- Prioritize resources based on emotional analysis and rating trends. 
