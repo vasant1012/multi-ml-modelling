@@ -81,7 +81,7 @@ app.layout = html.Div([
     html.Div(
         id="output-area",
         children=[
-            html.H4("Review Summary"),
+            html.H4("Review Summary", style={"margin-left": "10px"},),
             html.Br(),
             dbc.Alert("", id="summary-alert", color="light"),
             html.Hr(),
@@ -114,12 +114,12 @@ app.layout = html.Div([
                         ],
                         width=4,
                     ),
-                ],
+                ], style={"margin-left": "10px"},
                 className="mb-4",
             ),
             html.Hr(),
             html.Br(),
-            html.H5("Aspect Analysis"),
+            html.H5("Aspect Analysis", style={"margin-left": "10px"},),
             html.Div(id="aspect-chart"),
         ],
     ),
@@ -135,7 +135,7 @@ app.layout = html.Div([
     Output("aspect-chart", "children"),
     Input("submit-btn", "n_clicks"),
     State("text-input", "value"),
-    prevent_initial_call=False,
+    prevent_initial_call=True,
 )
 def update_output(n_clicks, input_text):
     if not input_text and n_clicks > 0:

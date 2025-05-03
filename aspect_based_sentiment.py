@@ -18,9 +18,8 @@ def extract_aspects(review_text, model, tokenizer, device):
     aspect_sentiments = {}
     for i, aspect in enumerate(aspects):
         # Get sentiment score for this aspect (-1 to 1 range)
-        sentiment_score = aspect_scores[0][i].mean()
-
         # Classify sentiment
+        sentiment_score = aspect_scores[0][0][i].mean()
         if sentiment_score > 0.3:
             sentiment = "positive"
         elif sentiment_score < -0.3:
