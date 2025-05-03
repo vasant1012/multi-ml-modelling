@@ -1,1 +1,0 @@
-{"hotel_reviews": {"rows": 20491, "columns": 2, "file_size": null}, "raw_data": {"rows": 20491, "columns": 2}, "cleaned_reviews": {"rows": 20491, "columns": 3, "file_size": null}, "sentiment_analysis": {"rows": 20491, "columns": 4, "file_size": null}}

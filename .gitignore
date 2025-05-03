@@ -171,9 +171,11 @@ cython_debug/
 .ruff_cache/
 
 # PyPI configuration file
+*.pt
+
+# PyPI configuration file
 .pypirc
 myenv/
-
 
 # output csv
 data/02_intermediate/*.csv
