@@ -28,6 +28,12 @@ Develop a comprehensive machine learning model that leverages hotel reviews to a
   - Classification: Accuracy, F1-score, Precision, Recall.
   - Regression: Mean Squared Error (MSE), Mean Absolute Error (MAE), R-squared.
   - Summarization: ROUGE, BLEU scores.
+ 
+## User Interface
+![hotel_review_ui1](https://github.com/user-attachments/assets/276475cd-56f7-487c-95b5-462bb5e14dc8)
+Screenshot 1 of User interface
+![hotel_review_ui2](https://github.com/user-attachments/assets/5d6aa30a-0f18-4c46-ad06-a35f5ac51f8a)
+Screenshot 2 of User interface
 
 ## Use Case
 This combined model provides a holistic understanding of customer feedback, helping hotel management to:
