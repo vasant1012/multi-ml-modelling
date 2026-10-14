@@ -1,43 +1,78 @@
-# Combined Problem Statement for Hotel Reviews Dataset
+# Hotel Review Intelligence
 
-The dataset contains two columns:
-- **review:** Textual reviews from hotel customers.
-- **rating:** Numerical ratings from 1 to 5.
+A deliberately simple end-to-end reference project that uses:
 
-## Objective
-Develop a comprehensive machine learning model that leverages hotel reviews to achieve the following outcomes:
+- scikit-learn for supervised sentiment and 1-to-5 rating models
+- lightweight deterministic logic for emotion, aspect sentiment and summarization
+- LangGraph for workflow orchestration
+- FastAPI for the backend API
+- React + Vite for the user interface
 
-1. **Sentiment Classification:** Classify reviews as Positive, Negative, or Neutral based on the text and rating.
-2. **Rating Prediction:** Predict the star rating (1 to 5) directly from the review text.
-3. **Emotion Detection:** Identify underlying emotions (e.g., Joy, Anger, Sadness) expressed in the reviews.
-4. **Aspect-Based Sentiment Analysis (ABSA):** Analyze sentiment on specific aspects such as cleanliness, service, and amenities.
-5. **Text Summarization:** Generate concise summaries of long reviews for quick insights.
+The deterministic components keep the project easy to run without paid APIs. They are intentionally replaceable with transformer or LLM implementations later.
 
-## Methodology
-- **Data Preprocessing:**
-  - Text cleaning (remove punctuation, lowercase, stopwords removal).
-  - Tokenization and embedding using models like Word2Vec or BERT.
-  - Handle class imbalance if present.
+## 1. Expected CSV
 
-- **Modeling Approach:**
-  - Multi-task learning or modular pipelines where one model can handle multiple subtasks.
-  - Use deep learning models (BERT, LSTM) for text-based tasks.
-  - Implement transfer learning for better feature extraction.
+Place the input file at `data/raw/hotel_reviews.csv` with two columns:
 
-- **Evaluation Metrics:**
-  - Classification: Accuracy, F1-score, Precision, Recall.
-  - Regression: Mean Squared Error (MSE), Mean Absolute Error (MAE), R-squared.
-  - Summarization: ROUGE, BLEU scores.
- 
-## User Interface
-![hotel_review_ui1](https://github.com/user-attachments/assets/276475cd-56f7-487c-95b5-462bb5e14dc8)
-Screenshot 1 of User interface
-![hotel_review_ui2](https://github.com/user-attachments/assets/5d6aa30a-0f18-4c46-ad06-a35f5ac51f8a)
-Screenshot 2 of User interface
+```csv
+review,rating
+"Great location and friendly staff",5
+"Dirty room and very noisy",1
+```
 
-## Use Case
-This combined model provides a holistic understanding of customer feedback, helping hotel management to:
-- Improve service quality by identifying sentiment and aspect-level insights.
-- Predict and validate customer ratings automatically.
-- Quickly assess customer opinions through summaries.
-- Prioritize resources based on emotional analysis and rating trends. 
+Column names can be changed through environment variables `TEXT_COLUMN` and `RATING_COLUMN`.
+
+## 2. Backend setup
+
+```bash
+python -m venv .venv
+source .venv/bin/activate              # Windows: .venv\\Scripts\\activate
+pip install -r requirements.txt
+cp .env.example .env
+python -m training.prepare_data
+python -m training.train_sentiment
+python -m training.train_rating
+python -m training.evaluate
+uvicorn app.api.main:app --reload
+```
+
+Open API documentation at `http://localhost:8000/docs`.
+
+## 3. Frontend setup
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Open `http://localhost:5173`.
+
+## 4. Tests
+
+```bash
+pytest -q
+```
+
+Tests work without trained artifacts because inference nodes include clearly marked rule-based fallbacks. Train the models before using real data.
+
+## 5. Main workflow
+
+`validate -> preprocess -> five component subgraphs in parallel -> reconcile -> aggregate`
+
+The five component results are:
+
+1. positive, neutral or negative sentiment
+2. predicted rating from 1 through 5
+3. one or more emotions
+4. sentiment for hotel aspects with evidence
+5. a concise extractive summary
+
+## 6. Important simplifications
+
+- Emotion detection uses transparent keyword scores.
+- ABSA uses a controlled aspect vocabulary and nearby sentiment words.
+- Summarization is extractive, so it does not invent facts.
+- Sentiment and rating fall back to rules if model files do not exist.
+
+These choices are appropriate for a working baseline. Replace one node at a time after establishing evaluation data.
