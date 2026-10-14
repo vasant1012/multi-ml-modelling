@@ -1,0 +1,1 @@
+2026-10-14 16:51:52 | test_workflow.py | test_workflow | line:18 | INFO | Graph result: {'review_text': 'Amazing hotel and great staff', 'cleaned_text': 'Amazing hotel and great staff', 'sentiment_label': 'positive', 'sentiment_confidence': 0.9415, 'predicted_rating': 5, 'rating_confidence': 0.779, 'errors': []}

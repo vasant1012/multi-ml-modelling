@@ -1,9 +1,20 @@
-"""Conservative preprocessing that preserves semantic information."""
-import html, re, unicodedata
+import re
+import sys
+
+sys.path.append("C:\\Users\\vasant.rajadhvax\\LocalBin_vasant.rajadhyax\\Projects\\multi-ml-modelling")
 from app.state import ReviewState
 
-def preprocess_text(state: ReviewState) -> dict:
-    text = html.unescape(state["original_text"])
-    text = unicodedata.normalize("NFKC", text)
-    text = re.sub(r"\s+", " ", text).strip()
-    return {"cleaned_text": text, "word_count": len(text.split())}
+
+def preprocess_text(state: ReviewState):
+
+    text = state["review_text"]
+
+    text = re.sub(
+        r"\s+",
+        " ",
+        text
+    ).strip()
+
+    return {
+        "cleaned_text": text
+    }

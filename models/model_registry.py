@@ -1,12 +1,29 @@
-"""Small model registry with in-process caching."""
+"""
+Central model registry.
+
+Loads all trained models and caches them in memory.
+"""
+
 from functools import lru_cache
-from pathlib import Path
+
 import joblib
 
-ROOT = Path(__file__).resolve().parents[1]
+from app.config import settings
 
-@lru_cache(maxsize=4)
-def load_model(relative_path: str):
-    """Load a joblib model once. Return None when it has not been trained yet."""
-    path = ROOT / relative_path
-    return joblib.load(path) if path.exists() else None
+
+@lru_cache(maxsize=1)
+def get_sentiment_model():
+    model_path = settings.path(
+        "models/sentiment/model.joblib"
+    )
+
+    return joblib.load(model_path)
+
+
+@lru_cache(maxsize=1)
+def get_rating_model():
+    model_path = settings.path(
+        "models/rating/model.joblib"
+    )
+
+    return joblib.load(model_path)

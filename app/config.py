@@ -1,5 +1,6 @@
 """Central configuration loaded from environment variables."""
 from pathlib import Path
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BASE_DIR = Path(__file__).resolve().parents[1]

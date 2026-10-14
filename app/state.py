@@ -1,18 +1,18 @@
-"""Shared state passed between LangGraph nodes."""
-from typing import Any, TypedDict
+from typing import TypedDict
+
 
 class ReviewState(TypedDict, total=False):
-    review_id: str
-    original_text: str
-    original_rating: int | None
-    requested_components: list[str]
+
+    review_text: str
+
     cleaned_text: str
-    word_count: int
+
+    sentiment_label: str
+    sentiment_confidence: float
+
+    predicted_rating: int
+    rating_confidence: float
+
+    response: dict
+
     errors: list[str]
-    warnings: list[str]
-    sentiment: dict[str, Any]
-    rating_prediction: dict[str, Any]
-    emotions: list[dict[str, Any]]
-    aspects: list[dict[str, Any]]
-    summary: dict[str, Any]
-    final_result: dict[str, Any]
