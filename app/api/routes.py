@@ -1,3 +1,7 @@
+"""
+FastAPI routes for hotel-review analysis.
+"""
+
 from fastapi import APIRouter
 
 from app.api.schemas import (
@@ -8,6 +12,7 @@ from app.api.schemas import (
     ReviewRequest,
     ReviewResponse,
 )
+from app.config import settings
 from app.graph import review_graph
 
 router = APIRouter()
@@ -17,9 +22,11 @@ router = APIRouter()
     "/health",
     response_model=HealthResponse,
 )
-def health():
+def health() -> dict:
+    """Return basic service health."""
+
     return {
-        "status": "healthy"
+        "status": "healthy",
     }
 
 
@@ -27,10 +34,13 @@ def health():
     "/models",
     response_model=ModelInfoResponse,
 )
-def models():
+def models() -> dict:
+    """Return the configured model names."""
+
     return {
         "sentiment_model": "LogisticRegression",
         "rating_model": "LogisticRegression",
+        "emotion_model": settings.emotion_model_name,
     }
 
 
@@ -39,11 +49,13 @@ def models():
     response_model=ReviewResponse,
 )
 def analyze_review(
-    request: ReviewRequest
-):
+    request: ReviewRequest,
+) -> dict:
+    """Analyze one hotel review."""
+
     result = review_graph.invoke(
         {
-            "review_text": request.review_text
+            "review_text": request.review_text,
         }
     )
 
@@ -55,16 +67,20 @@ def analyze_review(
     response_model=BatchReviewResponse,
 )
 def analyze_batch(
-    request: BatchReviewRequest
-):
+    request: BatchReviewRequest,
+) -> dict:
+    """
+    Analyze a bounded batch of hotel reviews.
+
+    The batch limit is enforced by the request schema.
+    """
 
     results = []
 
     for review in request.reviews:
-
         output = review_graph.invoke(
             {
-                "review_text": review.review_text
+                "review_text": review.review_text,
             }
         )
 
@@ -73,5 +89,5 @@ def analyze_batch(
         )
 
     return {
-        "results": results
+        "results": results,
     }

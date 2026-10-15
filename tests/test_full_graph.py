@@ -1,13 +1,331 @@
-from app.graph import build_review_graph
 
-def test_full_workflow():
-    out = build_review_graph().invoke({"review_id":"1", "original_text":"Great location but noisy room.", "original_rating":4})
-    result = out["final_result"]
-    assert result["sentiment"]
-    assert result["rating_prediction"]
-    assert isinstance(result["aspects"], list)
+from unittest.mock import patch
 
-def test_component_selection():
-    out = build_review_graph().invoke({"original_text":"Friendly staff", "requested_components":["sentiment"]})
-    assert out["final_result"]["sentiment"]
-    assert out["final_result"]["rating_prediction"] is None
+from app.graph import build_review_graph, review_graph
+
+# ------------------------------------------------------------------
+# Mock Emotion Model
+# ------------------------------------------------------------------
+
+def fake_emotion_model(
+    text,
+    truncation=True,
+):
+    """
+    Deterministic emotion response used during tests.
+
+    Avoids downloading/loading the real HuggingFace model.
+    """
+
+    return [
+        {
+            "label": "joy",
+            "score": 0.85,
+        },
+        {
+            "label": "neutral",
+            "score": 0.15,
+        },
+    ]
+
+
+# ------------------------------------------------------------------
+# Sentiment Tests
+# ------------------------------------------------------------------
+
+def test_positive_review():
+
+    result = review_graph.invoke(
+        {
+            "review_text":
+            "Amazing hotel and great staff"
+        }
+    )
+
+    assert result["sentiment_label"] == "positive"
+
+    assert result["predicted_rating"] >= 4
+
+
+def test_negative_review():
+
+    result = review_graph.invoke(
+        {
+            "review_text":
+            "Terrible room and rude staff"
+        }
+    )
+
+    assert result["sentiment_label"] == "negative"
+
+    assert result["predicted_rating"] <= 2
+
+
+# ------------------------------------------------------------------
+# Structure Tests
+# ------------------------------------------------------------------
+
+def test_review_contains_expected_fields():
+
+    result = review_graph.invoke(
+        {
+            "review_text":
+            "Average hotel stay"
+        }
+    )
+
+    assert "sentiment_label" in result
+    assert "sentiment_confidence" in result
+
+    assert "predicted_rating" in result
+    assert "rating_confidence" in result
+
+
+def test_confidence_range():
+
+    result = review_graph.invoke(
+        {
+            "review_text":
+            "Amazing staff and hotel"
+        }
+    )
+
+    assert (
+        0 <= result["sentiment_confidence"] <= 1
+    )
+
+    assert (
+        0 <= result["rating_confidence"] <= 1
+    )
+
+
+# ------------------------------------------------------------------
+# Emotion Tests
+# ------------------------------------------------------------------
+
+@patch(
+    "app.nodes.emotion.get_emotion_model",
+    return_value=fake_emotion_model,
+)
+def test_graph_includes_emotion(
+    mock_get_model,
+):
+
+    graph = build_review_graph()
+
+    result = graph.invoke(
+        {
+            "review_text":
+            "Amazing hotel and great staff"
+        }
+    )
+
+    assert result["sentiment_label"] == "positive"
+
+    assert result["predicted_rating"] in range(
+        1,
+        6,
+    )
+
+    assert (
+        result["dominant_emotion"]
+        == "joy"
+    )
+
+    assert (
+        0
+        <= result["emotion_confidence"]
+        <= 1
+    )
+
+    assert "emotion" in result["response"]
+
+    assert (
+        result["response"]["emotion"][
+            "dominant"
+        ]
+        == "joy"
+    )
+
+
+@patch(
+    "app.nodes.emotion.get_emotion_model",
+    return_value=fake_emotion_model,
+)
+def test_graph_response_structure(
+    mock_get_model,
+):
+
+    graph = build_review_graph()
+
+    result = graph.invoke(
+        {
+            "review_text":
+            "Average hotel stay"
+        }
+    )
+
+    response = result["response"]
+
+    # Base response structure
+
+    assert "review_text" in response
+
+    assert "sentiment" in response
+
+    assert "rating" in response
+
+    assert "emotion" in response
+
+    assert "errors" in response
+
+    # Quality block
+
+    assert "quality" in response
+
+    assert (
+        "status"
+        in response["quality"]
+    )
+
+    assert (
+        "warnings"
+        in response["quality"]
+    )
+
+    assert isinstance(
+        response["quality"]["warnings"],
+        list,
+    )
+
+
+# ------------------------------------------------------------------
+# Reconciliation Tests
+# ------------------------------------------------------------------
+
+@patch(
+    "app.nodes.emotion.get_emotion_model",
+    return_value=fake_emotion_model,
+)
+def test_graph_contains_reconciliation(
+    mock_get_model,
+):
+
+    graph = build_review_graph()
+
+    result = graph.invoke(
+        {
+            "review_text":
+            "Amazing hotel and great staff"
+        }
+    )
+
+    # LangGraph state
+
+    assert (
+        "consistency_status"
+        in result
+    )
+
+    assert "warnings" in result
+
+    # API response
+
+    response = result["response"]
+
+    assert "quality" in response
+
+    assert (
+        response["quality"][
+            "status"
+        ]
+        in {
+            "consistent",
+            "review_required",
+        }
+    )
+
+    assert isinstance(
+        response["quality"]["warnings"],
+        list,
+    )
+
+
+# ------------------------------------------------------------------
+# End-to-End Response Validation
+# ------------------------------------------------------------------
+
+@patch(
+    "app.nodes.emotion.get_emotion_model",
+    return_value=fake_emotion_model,
+)
+def test_complete_response_schema(
+    mock_get_model,
+):
+
+    graph = build_review_graph()
+
+    result = graph.invoke(
+        {
+            "review_text":
+            (
+                "The hotel was clean, "
+                "staff were friendly "
+                "and the location was excellent."
+            )
+        }
+    )
+
+    response = result["response"]
+
+    # Sentiment structure
+
+    assert (
+        "label"
+        in response["sentiment"]
+    )
+
+    assert (
+        "confidence"
+        in response["sentiment"]
+    )
+
+    # Rating structure
+
+    assert (
+        "prediction"
+        in response["rating"]
+    )
+
+    assert (
+        "confidence"
+        in response["rating"]
+    )
+
+    # Emotion structure
+
+    assert (
+        "dominant"
+        in response["emotion"]
+    )
+
+    assert (
+        "predictions"
+        in response["emotion"]
+    )
+
+    assert isinstance(
+        response["emotion"][
+            "predictions"
+        ],
+        list,
+    )
+
+    assert (
+        len(
+            response["emotion"][
+                "predictions"
+            ]
+        )
+        > 0
+    )

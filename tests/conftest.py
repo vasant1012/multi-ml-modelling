@@ -1,4 +1,12 @@
-"""Ensure the project root is importable when pytest is launched from any folder."""
 import sys
-from pathlib import Path
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+import pytest
+from fastapi.testclient import TestClient
+
+sys.path.append("C:\\Users\\vasant.rajadhvax\\LocalBin_vasant.rajadhyax\\Projects\\multi-ml-modelling")
+from app.api.main import app
+
+
+@pytest.fixture
+def client():
+    return TestClient(app)
