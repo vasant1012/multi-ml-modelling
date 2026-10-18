@@ -1,0 +1,1 @@
+import PlaceholderPage from "./PlaceholderPage";export default function InsightsPage(){return <PlaceholderPage title="Portfolio insights" description="Explore rating, sentiment, emotion, and operational aspect trends across review collections."/>}

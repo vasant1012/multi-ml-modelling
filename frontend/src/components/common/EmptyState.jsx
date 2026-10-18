@@ -1,0 +1,1 @@
+import {Sparkles} from "lucide-react";export default function EmptyState(){return <div className="empty-state"><span className="empty-icon"><Sparkles/></span><h2>Ready to analyze</h2><p>Paste a hotel review and select <strong>Analyze review</strong>. The workspace will reveal sentiment, rating, emotion, aspects, summaries, and quality checks.</p></div>}

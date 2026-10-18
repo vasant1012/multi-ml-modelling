@@ -1,0 +1,1 @@
+import {Smile} from "lucide-react";import MetricCard from "./MetricCard";export default function EmotionCard({data}){return <MetricCard label="Dominant emotion" value={data?.dominant} confidence={data?.confidence} tone="info" icon={Smile}/>}

@@ -1,0 +1,1 @@
+import {CheckCircle2,Lightbulb} from "lucide-react";export default function InsightList({title,items=[],kind="positive"}){const Icon=kind==="positive"?CheckCircle2:Lightbulb;return <div className="insight-list"><h3>{title}</h3>{items.length?<ul>{items.map((x,i)=><li key={i}><Icon size={16}/><span>{x}</span></li>)}</ul>:<p>None identified.</p>}</div>}

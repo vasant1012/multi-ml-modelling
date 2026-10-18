@@ -1,0 +1,2 @@
+import {useEffect,useState} from "react";
+const KEY="hri-theme";export default function useTheme(){const [theme,setTheme]=useState(()=>localStorage.getItem(KEY)||"system");useEffect(()=>{const dark=theme==="dark"||(theme==="system"&&matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.dataset.theme=dark?"dark":"light";localStorage.setItem(KEY,theme)},[theme]);return {theme,setTheme,toggleTheme:()=>setTheme(t=>t==="dark"?"light":"dark")}}

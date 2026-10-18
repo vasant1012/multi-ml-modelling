@@ -1,0 +1,1 @@
+import PlaceholderPage from "./PlaceholderPage";export default function BatchAnalysisPage(){return <PlaceholderPage title="Batch analysis" description="Upload CSV reviews, validate columns, monitor progress, and download enriched results."/>}

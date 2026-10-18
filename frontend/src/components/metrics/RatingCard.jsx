@@ -1,0 +1,1 @@
+import {Star} from "lucide-react";import MetricCard from "./MetricCard";export default function RatingCard({data}){return <MetricCard label="Predicted rating" value={`${data?.prediction ?? 0} / 5`} confidence={data?.confidence} icon={Star} detail={"★".repeat(data?.prediction||0)+"☆".repeat(5-(data?.prediction||0))}/>}

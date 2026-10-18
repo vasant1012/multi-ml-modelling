@@ -118,7 +118,7 @@ class Settings(BaseSettings):
     # ------------------------------------------------------
 
     data_path: str = (
-        "Data/hotel_reviews.csv"
+        "data/raw/hotel_reviews.csv"
     )
 
     text_column: str = "review"
@@ -163,10 +163,10 @@ class Settings(BaseSettings):
 
     model_config = (
         SettingsConfigDict(
-            env_file=
-                PROJECT_ROOT
-                / ".env",
-
+            env_file=[
+                PROJECT_ROOT / ".env",
+                BACKEND_DIR / ".env",
+            ],
             extra="ignore",
         )
     )

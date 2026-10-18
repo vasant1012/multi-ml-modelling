@@ -1,12 +1,12 @@
 .venv/
 __pycache__/
 .pytest_cache/
-.env
-logs/
+logs/*
 backend/tests/last_failed_tests.json
 backend/tests/pytest_report.json
 frontend/node_modules/
 frontend/dist/
+frontend/.env
 data/processed/*.csv
 models/sentiment/*.joblib
 models/rating/*.joblib
