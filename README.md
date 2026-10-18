@@ -2,34 +2,130 @@
 
 A modular hotel review analytics platform built using **LangGraph**, **FastAPI**, **scikit-learn**, and **local Transformer models**.
 
-The system analyzes hotel reviews and currently supports:
-
-- Sentiment Classification
-- Rating Prediction (1-5 Stars)
-- Emotion Detection
-- Batch Review Processing
-- LangGraph Workflow Orchestration
-- REST APIs through FastAPI
-
-The platform is designed to grow incrementally with future support for:
-
-- Aspect-Based Sentiment Analysis (ABSA)
-- Review Summarization
-- Dashboard Analytics
-- React Frontend
-- Local LLM Integration
+The platform analyzes hotel reviews and converts unstructured customer feedback into actionable business insights through multiple AI and ML components.
 
 ---
 
-## 1. Expected CSV
+# Features
 
-Place the hotel reviews dataset in:
+## Core Capabilities
+
+✅ Sentiment Classification
+
+✅ Rating Prediction (1-5 Stars)
+
+✅ Emotion Detection
+
+✅ Aspect-Based Sentiment Analysis (ABSA)
+
+✅ Review Summarization
+
+✅ Cross-Model Reconciliation
+
+✅ Batch Review Processing
+
+✅ LangGraph Workflow Orchestration
+
+✅ FastAPI REST APIs
+
+✅ Automated Test Dashboard
+
+---
+
+# Architecture Overview
 
 ```text
-data/raw/hotel_reviews.csv
+                START
+                  │
+                  ▼
+           Validation Node
+                  │
+                  ▼
+         Preprocessing Node
+                  │
+                  ▼
+
+   ┌───────────┬───────────┬───────────┬───────────┐
+   │           │           │           │
+   ▼           ▼           ▼           ▼
+
+Sentiment    Rating     Emotion      ABSA
+  Node        Node       Node        Node
+
+   └───────────┴───────────┴───────────┘
+                       │
+                       ▼
+
+             Reconciliation Node
+                       │
+                       ▼
+
+              Summarization Node
+                       │
+                       ▼
+
+               Aggregation Node
+                       │
+                       ▼
+
+                      END
 ```
 
-Expected format:
+---
+
+# Project Structure
+
+```text
+multi-ml-modelling/
+
+├── Backend/
+│
+│   ├── backend/
+│   │
+│   │   ├── api/
+│   │   ├── nodes/
+│   │   ├── subgraphs/
+│   │   │
+│   │   ├── config.py
+│   │   ├── graph.py
+│   │   ├── state.py
+│   │   ├── logger.py
+│   │   └── model_registry.py
+│   │
+│   ├── models/
+│   │   ├── sentiment/
+│   │   └── rating/
+│   │
+│   ├── training/
+│   │
+│   ├── notebooks/
+│   │
+│   └── tests/
+│       ├── run_tests.py
+│       ├── test_api.py
+│       ├── test_graph.py
+│       ├── test_aspects.py
+│       ├── test_emotion_graph.py
+│       └── test_summarization.py
+│
+├── Frontend/
+│
+├── Data/
+│
+└── Logs/
+```
+
+---
+
+# Expected Dataset
+
+Place the hotel review dataset inside:
+
+```text
+Data/
+```
+
+Example:
 
 ```csv
 review,rating
@@ -37,7 +133,14 @@ review,rating
 "Dirty room and very noisy",1
 ```
 
-Column names can be configured via environment variables:
+Required columns:
+
+```text
+review
+rating
+```
+
+Configurable via:
 
 ```env
 TEXT_COLUMN=review
@@ -46,158 +149,25 @@ RATING_COLUMN=rating
 
 ---
 
-## 2. Current Features
+# Environment Variables
 
-### Sentiment Classification
-
-Predicts:
+Create:
 
 ```text
-Positive
-Neutral
-Negative
+.env
 ```
 
-using:
-
-```text
-TF-IDF
-+
-Logistic Regression
-```
-
----
-
-### Rating Prediction
-
-Predicts:
-
-```text
-1
-2
-3
-4
-5
-```
-
-directly from review text.
-
-Uses:
-
-```text
-TF-IDF
-+
-Logistic Regression
-```
-
----
-
-### Emotion Detection
-
-Detects emotions such as:
-
-```text
-Joy
-Sadness
-Anger
-Fear
-Surprise
-Neutral
-```
-
-using a locally hosted Transformer model.
-
-Default model:
-
-```text
-j-hartmann/emotion-english-distilroberta-base
-```
-
-The model is downloaded once and cached locally.
-
----
-
-### LangGraph Workflow
-
-Current workflow:
-
-```text
-Validate Input
-        ↓
-
-Preprocess Review
-        ↓
-
- ┌────────────────────┐
- │ Parallel Execution │
- └────────────────────┘
-
- Sentiment
- Rating
- Emotion
-
-        ↓
-
- Reconciliation (Planned)
-
-        ↓
-
- Aggregation
-
-        ↓
-
- API Response
-```
-
----
-
-## 3. Project Structure
-
-```text
-hotel-review-intelligence/
-
-├── app/
-│   ├── api/
-│   ├── nodes/
-│   ├── subgraphs/
-│   ├── config.py
-│   ├── graph.py
-│   └── state.py
-│
-├── data/
-│   ├── raw/
-│   ├── processed/
-│   └── labeled/
-│
-├── models/
-│   ├── sentiment/
-│   ├── rating/
-│   └── model_registry.py
-│
-├── training/
-│   ├── prepare_data.py
-│   ├── train_sentiment.py
-│   ├── train_rating.py
-│   └── evaluate.py
-│
-├── tests/
-│
-└── frontend/
-```
-
----
-
-## 4. Environment Variables
-
-Create `.env`
+Example:
 
 ```env
-DATA_PATH=data/raw/hotel_reviews.csv
+DATA_PATH=Data/hotel_reviews.csv
 
 TEXT_COLUMN=review
 RATING_COLUMN=rating
 
 MAX_REVIEW_CHARS=20000
+
+SUMMARY_MIN_WORDS=35
 
 CORS_ORIGINS=http://localhost:5173
 
@@ -212,17 +182,9 @@ HF_LOCAL_FILES_ONLY=true
 
 ---
 
-## 5. Backend Setup
+# Backend Setup
 
-### Create Virtual Environment
-
-### Linux / macOS
-
-```bash
-python -m venv .venv
-
-source .venv/bin/activate
-```
+## Create Virtual Environment
 
 ### Windows
 
@@ -232,9 +194,17 @@ python -m venv .venv
 .venv\Scripts\activate
 ```
 
+### Linux / macOS
+
+```bash
+python -m venv .venv
+
+source .venv/bin/activate
+```
+
 ---
 
-### Install Dependencies
+## Install Dependencies
 
 ```bash
 pip install -r requirements.txt
@@ -242,16 +212,24 @@ pip install -r requirements.txt
 
 ---
 
-### Prepare Data
+# Data Preparation
+
+Navigate:
+
+```bash
+cd Backend
+```
+
+Run:
 
 ```bash
 python -m training.prepare_data
 ```
 
-Outputs:
+Output:
 
 ```text
-data/processed/
+Data/processed/
 
 ├── train.csv
 ├── validation.csv
@@ -261,16 +239,18 @@ data/processed/
 
 ---
 
-### Train Sentiment Model
+# Training
+
+## Train Sentiment Model
 
 ```bash
 python -m training.train_sentiment
 ```
 
-Outputs:
+Output:
 
 ```text
-models/sentiment/
+Backend/models/sentiment/
 
 ├── model.joblib
 ├── metrics.json
@@ -280,16 +260,16 @@ models/sentiment/
 
 ---
 
-### Train Rating Model
+## Train Rating Model
 
 ```bash
 python -m training.train_rating
 ```
 
-Outputs:
+Output:
 
 ```text
-models/rating/
+Backend/models/rating/
 
 ├── model.joblib
 ├── metrics.json
@@ -299,7 +279,7 @@ models/rating/
 
 ---
 
-### Evaluate Models
+## Evaluate Models
 
 ```bash
 python -m training.evaluate
@@ -307,21 +287,27 @@ python -m training.evaluate
 
 ---
 
-## 6. Run FastAPI
+# Run FastAPI
 
-Start the API server:
+From:
 
 ```bash
-uvicorn app.api.main:app --reload
+cd Backend
 ```
 
-Swagger UI:
+Run:
+
+```bash
+uvicorn backend.api.main:app --reload
+```
+
+Swagger:
 
 ```text
 http://localhost:8000/docs
 ```
 
-OpenAPI Specification:
+OpenAPI:
 
 ```text
 http://localhost:8000/openapi.json
@@ -329,9 +315,9 @@ http://localhost:8000/openapi.json
 
 ---
 
-## 7. API Endpoints
+# API Endpoints
 
-### Health Check
+## Health
 
 ```http
 GET /api/v1/health
@@ -347,7 +333,7 @@ Response:
 
 ---
 
-### Model Information
+## Models
 
 ```http
 GET /api/v1/models
@@ -365,7 +351,7 @@ Response:
 
 ---
 
-### Analyze Single Review
+## Analyze Single Review
 
 ```http
 POST /api/v1/analyze
@@ -384,297 +370,244 @@ Response:
 ```json
 {
   "review_text": "Amazing hotel and great staff",
+
   "sentiment": {
     "label": "positive",
     "confidence": 0.94
   },
+
   "rating": {
     "prediction": 5,
     "confidence": 0.78
   },
+
   "emotion": {
     "dominant": "joy",
-    "confidence": 0.81,
-    "predictions": [
-      {
-        "label": "joy",
-        "confidence": 0.81
-      }
-    ]
+    "confidence": 0.81
   },
-  "errors": [],
-  "warnings": []
+
+  "aspects": [],
+
+  "summary": {
+    "guest_summary": "...",
+    "management_summary": "...",
+    "positive_highlights": [],
+    "improvement_opportunities": [],
+    "executive_summary": "..."
+  },
+
+  "quality": {
+    "status": "consistent",
+    "warnings": []
+  },
+
+  "errors": []
 }
 ```
 
 ---
 
-### Analyze Multiple Reviews
+## Analyze Multiple Reviews
 
 ```http
 POST /api/v1/analyze-batch
 ```
 
-Request:
+---
 
-```json
-{
-  "reviews": [
-    {
-      "review_text": "Amazing hotel"
-    },
-    {
-      "review_text": "Dirty room"
-    }
-  ]
-}
+# ABSA Categories
+
+Current aspect taxonomy includes:
+
+```text
+room
+bed_comfort
+bathroom
+sleep_quality
+
+staff_service
+checkin_checkout
+management_resolution
+
+cleanliness
+maintenance
+amenities
+
+wifi_internet
+
+restaurant
+breakfast
+bar_lounge
+
+location
+transport_access
+view_scenery
+
+family_facilities
+business_facilities
+
+value_for_money
+
+parking
+
+noise
 ```
 
-Response:
+---
+
+# Summarization Outputs
+
+Each review generates:
+
+```text
+guest_summary
+
+management_summary
+
+positive_highlights
+
+improvement_opportunities
+
+executive_summary
+```
+
+Example:
 
 ```json
 {
-  "results": [
-    {
-      "review_text": "Amazing hotel",
-      "sentiment": {
-        "label": "positive",
-        "confidence": 0.95
-      },
-      "rating": {
-        "prediction": 5,
-        "confidence": 0.82
-      },
-      "emotion": {
-        "dominant": "joy",
-        "confidence": 0.80,
-        "predictions": [
-          {
-            "label": "joy",
-            "confidence": 0.80
-          }
-        ]
-      },
-      "errors": [],
-      "warnings": []
-    }
-  ]
+  "executive_summary":
+  "Guest experience appears mixed with strong location advantages and Wi-Fi connectivity concerns."
 }
 ```
 
 ---
 
-## 8. Run Tests
+# Testing
 
-Run all tests:
+## Test Dashboard
 
-```bash
-pytest -v
-```
-
-or
+Run:
 
 ```bash
-pytest -q
+python tests/run_tests.py
 ```
 
-Current coverage includes:
+Example:
 
-- Graph Tests
-- API Tests
-- Batch API Tests
-- Emotion Tests
-- Model Registry Tests
+```text
+======================================================================
+HOTEL REVIEW INTELLIGENCE TEST DASHBOARD
+======================================================================
+
+EXECUTION SUMMARY
+
+Suite               Status      Passed    Failed
+
+API                 ✅ PASS      12        0
+GRAPH               ✅ PASS      18        0
+ABSA                ✅ PASS      15        0
+EMOTION             ✅ PASS       7        0
+SUMMARY             ✅ PASS       9        0
+
+Total Tests : 61
+Passed      : 61
+Failed      : 0
+Duration    : 4.21 sec
+```
 
 ---
 
-## 9. Current Implementation Status
+## Execute Individual Suites
+
+```bash
+python tests/run_tests.py api
+
+python tests/run_tests.py graph
+
+python tests/run_tests.py absa
+
+python tests/run_tests.py summary
+
+python tests/run_tests.py emotion
+```
+
+---
+
+## Execute Multiple Suites
+
+```bash
+python tests/run_tests.py graph summary
+```
+
+---
+
+## Re-run Previously Failed Tests
+
+```bash
+python tests/run_tests.py failed
+```
+
+---
+
+# Logging
+
+The platform uses a centralized logger.
+
+Logs are written to:
+
+```text
+Logs/
+
+hotel_review_workflow_YYYY-MM-DD.log
+```
+
+Log format:
+
+```text
+Timestamp
+File
+Module
+Line Number
+Log Level
+Message
+```
+
+---
+
+# Current Project Status
 
 | Component | Status |
 |------------|----------|
 | Data Preparation | ✅ Complete |
-| Sentiment Model | ✅ Complete |
-| Rating Model | ✅ Complete |
+| Sentiment Classification | ✅ Complete |
+| Rating Prediction | ✅ Complete |
 | Emotion Detection | ✅ Complete |
-| FastAPI | ✅ Complete |
-| LangGraph | ✅ Complete |
+| ABSA | ✅ Complete |
+| Reconciliation | ✅ Complete |
+| Summarization | ✅ Complete |
+| FastAPI API | ✅ Complete |
 | Batch Processing | ✅ Complete |
-| Automated Tests | ✅ Complete |
-| Reconciliation Layer | 🔄 Next |
-| ABSA | ⏳ Planned |
-| Summarization | ⏳ Planned |
-| React Frontend | ⏳ Planned |
+| Automated Testing | ✅ Complete |
+| Test Dashboard | ✅ Complete |
+| React Frontend | ⏳ Next Phase |
+| Dashboard Analytics | ⏳ Planned |
+| Local LLM Support | ⏳ Planned |
 
 ---
 
-## 10. LangGraph Architecture
+# Design Principles
 
-Current implementation:
-
-```text
-                 START
-                   │
-                   ▼
-            Validation Node
-                   │
-                   ▼
-          Preprocessing Node
-                   │
-                   ▼
-    ┌──────────────┼──────────────┐
-    │              │              │
-    ▼              ▼              ▼
-
-Sentiment      Rating        Emotion
-  Node          Node           Node
-
-    └──────────────┼──────────────┘
-                   │
-                   ▼
-           Aggregation Node
-                   │
-                   ▼
-                  END
-```
-
----
-
-## 11. Model Artifacts
-
-### Sentiment Model
-
-```text
-models/sentiment/
-
-├── model.joblib
-├── metrics.json
-├── metadata.json
-└── label_mapping.json
-```
-
-### Rating Model
-
-```text
-models/rating/
-
-├── model.joblib
-├── metrics.json
-├── metadata.json
-└── class_mapping.json
-```
-
----
-
-## 12. Planned Enhancements
-
-### Phase 1 ✅
-
-```text
-Sentiment Classification
-Rating Prediction
-Emotion Detection
-```
-
-### Phase 2 🔄
-
-```text
-Reconciliation Layer
-
-Purpose:
-- Cross-model consistency checks
-- Warning generation
-- Confidence validation
-```
-
-Example:
-
-```json
-{
-  "warnings": [
-    "Sentiment and predicted rating appear inconsistent."
-  ]
-}
-```
-
----
-
-### Phase 3 ⏳
-
-```text
-Aspect-Based Sentiment Analysis (ABSA)
-
-Review
-  ↓
-Aspect Extraction
-  ↓
-Aspect Sentiment
-  ↓
-Evidence Generation
-```
-
-Example:
-
-```json
-[
-  {
-    "aspect": "cleanliness",
-    "sentiment": "negative",
-    "evidence": "Bathroom was dirty"
-  },
-  {
-    "aspect": "location",
-    "sentiment": "positive",
-    "evidence": "Near city center"
-  }
-]
-```
-
----
-
-### Phase 4 ⏳
-
-```text
-Review Summarization
-
-Guest Summary
-Business Summary
-```
-
-Example:
-
-```json
-{
-  "guest_summary": "Great location and friendly staff.",
-  "business_summary": "Guests consistently praise location and staff friendliness."
-}
-```
-
----
-
-### Phase 5 ⏳
-
-```text
-React Frontend
-
-Features:
-- Single Review Analysis
-- Batch Review Analysis
-- Dashboard Visualization
-- Download Results
-```
-
----
-
-## 13. Design Principles
-
-The platform follows a modular architecture where each capability is isolated into a dedicated LangGraph node.
+The platform follows a modular LangGraph architecture.
 
 Benefits:
 
-- Easy model replacement
+- Independent components
 - Easy testing
-- Independent component development
-- Local execution without paid APIs
-- Future LLM integration support
+- Easy model replacement
+- Explainable outputs
+- Local execution
+- No cloud dependency
+- Future local LLM support
+- Production-friendly structure
 
-Current implementation favors simplicity, transparency, and maintainability while establishing a strong foundation for advanced review intelligence workflows.
+Current implementation focuses on simplicity, traceability, maintainability, and real-world hotel review analytics.
