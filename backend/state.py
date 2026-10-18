@@ -1,14 +1,11 @@
+"""
+Shared LangGraph state for hotel-review analysis.
+"""
+
 from typing import Any, TypedDict
 
 
 class ReviewState(TypedDict, total=False):
-    """
-    State shared by all hotel-review workflow nodes.
-
-    total=False means nodes are not required to return every field.
-    For example, the rating node returns only rating-related values.
-    """
-
     # --------------------------------------------------------------
     # Input
     # --------------------------------------------------------------
@@ -16,7 +13,7 @@ class ReviewState(TypedDict, total=False):
     review_text: str
 
     # --------------------------------------------------------------
-    # Validation and preprocessing
+    # Preprocessing
     # --------------------------------------------------------------
 
     cleaned_text: str
@@ -24,47 +21,56 @@ class ReviewState(TypedDict, total=False):
     errors: list[str]
 
     # --------------------------------------------------------------
-    # Sentiment classification
+    # Sentiment
     # --------------------------------------------------------------
 
     sentiment_label: str
-
     sentiment_confidence: float
 
     # --------------------------------------------------------------
-    # Rating prediction
+    # Rating
     # --------------------------------------------------------------
 
     predicted_rating: int
-
     rating_confidence: float
 
     # --------------------------------------------------------------
-    # Emotion detection
+    # Emotion
     # --------------------------------------------------------------
 
     emotions: list[dict[str, Any]]
-
     dominant_emotion: str
-
     emotion_confidence: float
 
     # --------------------------------------------------------------
-    # Aspect-Based Sentiment Analysis
+    # ABSA
     # --------------------------------------------------------------
 
     aspects: list[dict[str, Any]]
 
     # --------------------------------------------------------------
-    # Reconciliation and quality assessment
+    # Reconciliation
     # --------------------------------------------------------------
 
     consistency_status: str
-
     warnings: list[str]
 
     # --------------------------------------------------------------
-    # Final API response
+    # Summarization
+    # --------------------------------------------------------------
+
+    guest_summary: str
+
+    management_summary: str
+
+    positive_highlights: list[str]
+
+    improvement_opportunities: list[str]
+
+    executive_summary: str
+
+    # --------------------------------------------------------------
+    # Final API Response
     # --------------------------------------------------------------
 
     response: dict[str, Any]

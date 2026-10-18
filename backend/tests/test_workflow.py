@@ -3,7 +3,7 @@ import sys
 sys.path.append("C:\\Users\\vasant.rajadhvax\\LocalBin_vasant.rajadhyax\\Projects\\multi-ml-modelling")
 
 from backend.graph import review_graph
-from logger import logger
+from backend.logger import logger
 
 
 def test_graph():

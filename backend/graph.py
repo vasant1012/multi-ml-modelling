@@ -1,30 +1,28 @@
-from langgraph.graph import END, START, StateGraph
+from langgraph.graph import (
+    END,
+    START,
+    StateGraph,
+)
 
-from backend.nodes.aggregation import aggregate_response
+from backend.nodes.aggregation import (
+    aggregate_response,
+)
 from backend.nodes.aspects import analyze_aspects
 from backend.nodes.emotion import detect_emotions
 from backend.nodes.preprocessing import preprocess_text
 from backend.nodes.rating import predict_rating
 from backend.nodes.reconciliation import reconcile_results
 from backend.nodes.sentiment import predict_sentiment
+from backend.nodes.summarization import generate_summary
 from backend.nodes.validation import validate_input
 from backend.state import ReviewState
 
 
 def build_review_graph():
-    """
-    Build and compile the complete hotel-review workflow.
 
-    Sentiment, rating, emotion, and ABSA run independently after
-    preprocessing. LangGraph waits for all four branches before
-    running reconciliation.
-    """
-
-    builder = StateGraph(ReviewState)
-
-    # --------------------------------------------------------------
-    # Register nodes
-    # --------------------------------------------------------------
+    builder = StateGraph(
+        ReviewState
+    )
 
     builder.add_node(
         "validate",
@@ -62,13 +60,14 @@ def build_review_graph():
     )
 
     builder.add_node(
+        "summarize",
+        generate_summary,
+    )
+
+    builder.add_node(
         "aggregate",
         aggregate_response,
     )
-
-    # --------------------------------------------------------------
-    # Main sequential flow
-    # --------------------------------------------------------------
 
     builder.add_edge(
         START,
@@ -79,10 +78,6 @@ def build_review_graph():
         "validate",
         "preprocess",
     )
-
-    # --------------------------------------------------------------
-    # Parallel analytical branches
-    # --------------------------------------------------------------
 
     builder.add_edge(
         "preprocess",
@@ -104,12 +99,6 @@ def build_review_graph():
         "aspects",
     )
 
-    # --------------------------------------------------------------
-    # Fan-in
-    #
-    # Reconciliation runs only after all four component nodes finish.
-    # --------------------------------------------------------------
-
     builder.add_edge(
         [
             "sentiment",
@@ -120,12 +109,13 @@ def build_review_graph():
         "reconcile",
     )
 
-    # --------------------------------------------------------------
-    # Final response creation
-    # --------------------------------------------------------------
-
     builder.add_edge(
         "reconcile",
+        "summarize",
+    )
+
+    builder.add_edge(
+        "summarize",
         "aggregate",
     )
 
@@ -137,5 +127,4 @@ def build_review_graph():
     return builder.compile()
 
 
-# Reusable compiled graph for FastAPI requests.
 review_graph = build_review_graph()

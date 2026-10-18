@@ -198,6 +198,33 @@ def test_graph_response_structure(
         list,
     )
 
+    assert "summary" in response
+
+    assert (
+        "guest_summary"
+        in response["summary"]
+    )
+
+    assert (
+        "management_summary"
+        in response["summary"]
+    )
+
+    assert (
+        "positive_highlights"
+        in response["summary"]
+    )
+
+    assert (
+        "improvement_opportunities"
+        in response["summary"]
+    )
+
+    assert (
+        "executive_summary"
+        in response["summary"]
+    )
+
 
 # ------------------------------------------------------------------
 # Reconciliation Tests
@@ -328,4 +355,75 @@ def test_complete_response_schema(
             ]
         )
         > 0
+    )
+
+def test_graph_contains_summary(
+    graph,
+):
+    """
+    Summary output should be generated
+    and exposed through the final API contract.
+    """
+
+    result = graph.invoke(
+        {
+            "review_text":
+                (
+                    "Excellent location but "
+                    "Wi-Fi kept disconnecting."
+                )
+        }
+    )
+
+    assert (
+        "guest_summary"
+        in result
+    )
+
+    assert (
+        "management_summary"
+        in result
+    )
+
+    assert (
+        "executive_summary"
+        in result
+    )
+
+    response = result[
+        "response"
+    ]
+
+    assert (
+        "summary"
+        in response
+    )
+
+    summary = response[
+        "summary"
+    ]
+
+    assert (
+        "guest_summary"
+        in summary
+    )
+
+    assert (
+        "management_summary"
+        in summary
+    )
+
+    assert (
+        "positive_highlights"
+        in summary
+    )
+
+    assert (
+        "improvement_opportunities"
+        in summary
+    )
+
+    assert (
+        "executive_summary"
+        in summary
     )

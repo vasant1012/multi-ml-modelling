@@ -140,3 +140,40 @@ def test_batch_results_contain_quality(
             result["quality"]["warnings"],
             list,
         )
+
+def test_batch_response_contains_summary(
+    client,
+):
+    response = client.post(
+        "/api/v1/analyze-batch",
+        json={
+            "reviews": [
+                {
+                    "review_text":
+                        (
+                            "Great location "
+                            "but poor Wi-Fi."
+                        )
+                }
+            ]
+        },
+    )
+
+    assert (
+        response.status_code
+        == 200
+    )
+
+    item = response.json()[
+        "results"
+    ][0]
+
+    assert (
+        "summary"
+        in item
+    )
+
+    assert (
+        "guest_summary"
+        in item["summary"]
+    )

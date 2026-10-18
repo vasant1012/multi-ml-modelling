@@ -1,4 +1,4 @@
-from models.model_registry import (
+from backend.models.model_registry import (
     get_rating_model,
     get_sentiment_model,
 )

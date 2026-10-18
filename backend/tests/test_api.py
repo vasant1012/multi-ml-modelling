@@ -1,3 +1,10 @@
+from backend.config import settings
+
+
+def test_hf_model_defaults_to_local_cache():
+    assert settings.hf_local_files_only is True
+
+
 def test_analyze_endpoint(client):
 
     response = client.post(
@@ -107,4 +114,61 @@ def test_analyze_response_contains_quality(
     assert isinstance(
         data["quality"]["warnings"],
         list,
+    )
+
+def test_analyze_response_contains_summary(
+    client,
+):
+    """
+    Verify summarization contract.
+    """
+
+    response = client.post(
+        "/api/v1/analyze",
+        json={
+            "review_text":
+                (
+                    "Great location but "
+                    "poor Wi-Fi."
+                )
+        },
+    )
+
+    assert (
+        response.status_code
+        == 200
+    )
+
+    data = response.json()
+
+    assert (
+        "summary"
+        in data
+    )
+
+    summary = data["summary"]
+
+    assert (
+        "guest_summary"
+        in summary
+    )
+
+    assert (
+        "management_summary"
+        in summary
+    )
+
+    assert (
+        "positive_highlights"
+        in summary
+    )
+
+    assert (
+        "improvement_opportunities"
+        in summary
+    )
+
+    assert (
+        "executive_summary"
+        in summary
     )

@@ -1,64 +1,229 @@
-"""Central configuration loaded from environment variables."""
+import sys
 from pathlib import Path
 
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import (
+    BaseSettings,
+    SettingsConfigDict,
+)
 
-BASE_DIR = Path(__file__).resolve().parents[1]
+# ==========================================================
+# Project Paths
+# ==========================================================
+
+"""
+Central application configuration.
+
+All paths are resolved from the project root.
+
+Project Structure
+
+Hotel-Review-Intelligence/
+
+├── Backend/
+│   ├── backend/
+│   ├── models/
+│   ├── training/
+│   ├── notebooks/
+│   └── tests/
+│
+├── Frontend/
+├── Data/
+└── Logs/
+"""
+
+# Backend/backend/config.py
+#            ↑
+# parents[0] = backend
+# parents[1] = Backend
+# parents[2] = Project Root
+
+
+# ==========================================================
+# Project Root Detection
+# ==========================================================
+
+PROJECT_ROOT = (
+    Path(__file__)
+    .resolve()
+    .parent
+    .parent
+)
+
+# Automatically add project root to PYTHONPATH.
+
+project_root = str(
+    PROJECT_ROOT
+)
+
+if project_root not in sys.path:
+
+    sys.path.insert(
+        0,
+        project_root,
+    )
+
+BACKEND_DIR = (
+    PROJECT_ROOT
+    / "backend"
+)
+
+FRONTEND_DIR = (
+    PROJECT_ROOT
+    / "frontend"
+)
+
+DATA_DIR = (
+    PROJECT_ROOT
+    / "data"
+)
+
+LOGS_DIR = (
+    PROJECT_ROOT
+    / "logs"
+)
+
+MODELS_DIR = (
+    BACKEND_DIR
+    / "models"
+)
+
+TRAINING_DIR = (
+    BACKEND_DIR
+    / "training"
+)
+
+TESTS_DIR = (
+    BACKEND_DIR
+    / "tests"
+)
+
+NOTEBOOKS_DIR = (
+    BACKEND_DIR
+    / "notebooks"
+)
+
+
+# ==========================================================
+# Application Settings
+# ==========================================================
 
 class Settings(BaseSettings):
-    data_path: str = "data/raw/hotel_reviews.csv"
+    """
+    Application settings loaded
+    from the .env file.
+    """
+
+    # ------------------------------------------------------
+    # Data
+    # ------------------------------------------------------
+
+    data_path: str = (
+        "Data/hotel_reviews.csv"
+    )
+
     text_column: str = "review"
+
     rating_column: str = "rating"
+
+    # ------------------------------------------------------
+    # Review Processing
+    # ------------------------------------------------------
+
+    max_review_chars: int = 20_000
+
     summary_min_words: int = 35
-    max_review_chars: int = 20_000
-    cors_origins: str = "http://localhost:5173"
-    model_config = SettingsConfigDict(env_file=BASE_DIR / ".env", extra="ignore")
 
-    def path(self, value: str) -> Path:
-        """Resolve project-relative paths consistently."""
-        path = Path(value)
-        return path if path.is_absolute() else BASE_DIR / path
+    # ------------------------------------------------------
+    # FastAPI / CORS
+    # ------------------------------------------------------
 
-settings = Settings()
+    cors_origins: str = (
+        "http://localhost:5173"
+    )
 
+    # ------------------------------------------------------
+    # Emotion Detection
+    # ------------------------------------------------------
 
-class Settings(BaseSettings):
-    """Application settings loaded from environment variables."""
-
-    # Existing data settings
-    data_path: str = "data/raw/hotel_reviews.csv"
-    text_column: str = "review"
-    rating_column: str = "rating"
-
-    # Existing API/application settings
-    max_review_chars: int = 20_000
-    cors_origins: str = "http://localhost:5173"
-
-    # Emotion-model settings
     emotion_model_name: str = (
         "j-hartmann/emotion-english-distilroberta-base"
     )
-    emotion_confidence_threshold: float = 0.20
-    emotion_max_results: int = 3
 
-    # False downloads the model when it is not cached.
-    # True forces Transformers to use locally cached files only.
-    hf_local_files_only: bool = False
-
-    model_config = SettingsConfigDict(
-        env_file=BASE_DIR / ".env",
-        extra="ignore",
+    emotion_confidence_threshold: float = (
+        0.20
     )
 
-    def path(self, value: str) -> Path:
-        """Resolve a path relative to the project root."""
+    emotion_max_results: int = 3
+
+    hf_local_files_only: bool = True
+
+    # ------------------------------------------------------
+    # Environment
+    # ------------------------------------------------------
+
+    model_config = (
+        SettingsConfigDict(
+            env_file=
+                PROJECT_ROOT
+                / ".env",
+
+            extra="ignore",
+        )
+    )
+
+    # ------------------------------------------------------
+    # Path Resolver
+    # ------------------------------------------------------
+
+    def path(
+        self,
+        value: str,
+    ) -> Path:
+        """
+        Resolve any project-relative path.
+
+        The repository layout is a mix of legacy and current naming,
+        so we resolve from the project root first and then fall back to
+        the backend directory for model/training resources.
+        """
 
         path = Path(value)
 
         if path.is_absolute():
+
             return path
 
-        return BASE_DIR / path
+        candidates = [
+            PROJECT_ROOT / path,
+        ]
+
+        if path.parts and path.parts[0] == "backend":
+            candidates.append(
+                PROJECT_ROOT / path.relative_to("backend")
+            )
+        elif path.parts and path.parts[0] in {
+            "models",
+            "training",
+            "tests",
+            "notebooks",
+        }:
+            candidates.append(
+                BACKEND_DIR / path
+            )
+        elif path.parts and path.parts[0] in {"data", "logs"}:
+            candidates.append(
+                PROJECT_ROOT / path
+            )
+
+        for candidate in candidates:
+            if candidate.exists():
+                return candidate
+
+        return candidates[0]
 
 
 settings = Settings()
+
+
+if __name__ == "__main__":
+    settings = Settings()

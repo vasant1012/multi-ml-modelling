@@ -114,13 +114,27 @@ class QualityResponse(BaseModel):
         default_factory=list,
     )
 
+class SummaryResponse(BaseModel):
+
+    guest_summary: str
+
+    management_summary: str
+
+    positive_highlights: list[str] = Field(
+        default_factory=list,
+    )
+
+    improvement_opportunities: list[str] = Field(
+        default_factory=list,
+    )
+
+    executive_summary: str
 
 # ------------------------------------------------------------------
 # Complete response schemas
 # ------------------------------------------------------------------
 
 class ReviewResponse(BaseModel):
-    """Complete analysis response for one review."""
 
     review_text: str
 
@@ -130,9 +144,13 @@ class ReviewResponse(BaseModel):
 
     emotion: EmotionResponse
 
-    aspects: list[AspectResponse] = Field(
+    aspects: list[
+        AspectResponse
+    ] = Field(
         default_factory=list,
     )
+
+    summary: SummaryResponse
 
     quality: QualityResponse
 

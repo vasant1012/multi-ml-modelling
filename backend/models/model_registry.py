@@ -4,6 +4,8 @@ Central model registry.
 Loads all trained models and caches them in memory.
 """
 
+import logging
+import os
 from functools import lru_cache
 from typing import Any
 
@@ -11,6 +13,13 @@ import joblib
 from transformers import pipeline
 
 from backend.config import settings
+
+os.environ.setdefault("HF_HUB_OFFLINE", "1")
+os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
+os.environ.setdefault("HF_HUB_DISABLE_TELEMETRY", "1")
+
+logging.getLogger("huggingface_hub").setLevel(logging.ERROR)
+logging.getLogger("transformers").setLevel(logging.ERROR)
 
 
 @lru_cache(maxsize=1)

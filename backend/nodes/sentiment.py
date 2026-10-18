@@ -1,4 +1,4 @@
-from models.model_registry import get_sentiment_model
+from backend.models.model_registry import get_sentiment_model
 
 
 def predict_sentiment(state):

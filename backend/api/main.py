@@ -9,7 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from backend.api.routes import router
 from backend.config import settings
-from models.model_registry import warm_up_models
+from backend.models.model_registry import warm_up_models
 
 
 @asynccontextmanager

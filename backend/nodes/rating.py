@@ -1,4 +1,4 @@
-from models.model_registry import get_rating_model
+from backend.models.model_registry import get_rating_model
 
 
 def predict_rating(state):
