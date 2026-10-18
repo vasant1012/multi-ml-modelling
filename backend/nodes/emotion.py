@@ -7,8 +7,8 @@ It returns a dominant emotion plus a filtered list of predictions.
 
 from typing import Any
 
-from app.config import settings
-from app.state import ReviewState
+from backend.config import settings
+from backend.state import ReviewState
 from models.model_registry import get_emotion_model
 
 # This map gives the API stable, lowercase emotion names.

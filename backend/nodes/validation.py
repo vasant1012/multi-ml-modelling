@@ -2,7 +2,7 @@ import sys
 
 sys.path.append("C:\\Users\\vasant.rajadhvax\\LocalBin_vasant.rajadhyax\\Projects\\multi-ml-modelling")
 
-from app.state import ReviewState
+from backend.state import ReviewState
 
 
 def validate_input(state: ReviewState):

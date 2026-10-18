@@ -1,7 +1,9 @@
 """Independently testable summarization subgraph."""
-from langgraph.graph import StateGraph, START, END
-from app.state import ReviewState
-from app.nodes.summarization import summarize_review
+from langgraph.graph import END, START, StateGraph
+
+from backend.nodes.summarization import summarize_review
+from backend.state import ReviewState
+
 
 def build_graph():
     builder = StateGraph(ReviewState)

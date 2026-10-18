@@ -7,8 +7,8 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.routes import router
-from app.config import settings
+from backend.api.routes import router
+from backend.config import settings
 from models.model_registry import warm_up_models
 
 

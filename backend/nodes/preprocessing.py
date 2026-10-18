@@ -2,7 +2,7 @@ import re
 import sys
 
 sys.path.append("C:\\Users\\vasant.rajadhvax\\LocalBin_vasant.rajadhyax\\Projects\\multi-ml-modelling")
-from app.state import ReviewState
+from backend.state import ReviewState
 
 
 def preprocess_text(state: ReviewState):

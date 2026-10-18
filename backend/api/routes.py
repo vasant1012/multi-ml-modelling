@@ -4,7 +4,7 @@ FastAPI routes for hotel-review analysis.
 
 from fastapi import APIRouter
 
-from app.api.schemas import (
+from backend.api.schemas import (
     BatchReviewRequest,
     BatchReviewResponse,
     HealthResponse,
@@ -12,8 +12,8 @@ from app.api.schemas import (
     ReviewRequest,
     ReviewResponse,
 )
-from app.config import settings
-from app.graph import review_graph
+from backend.config import settings
+from backend.graph import review_graph
 
 router = APIRouter()
 

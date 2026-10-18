@@ -1,7 +1,9 @@
 """Independently testable sentiment subgraph."""
-from langgraph.graph import StateGraph, START, END
-from app.state import ReviewState
-from app.nodes.sentiment import predict_sentiment
+from langgraph.graph import END, START, StateGraph
+
+from backend.nodes.sentiment import predict_sentiment
+from backend.state import ReviewState
+
 
 def build_graph():
     builder = StateGraph(ReviewState)

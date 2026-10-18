@@ -1,7 +1,9 @@
 """Independently testable aspects subgraph."""
-from langgraph.graph import StateGraph, START, END
-from app.state import ReviewState
-from app.nodes.aspects import analyze_aspects
+from langgraph.graph import END, START, StateGraph
+
+from backend.nodes.aspects import analyze_aspects
+from backend.state import ReviewState
+
 
 def build_graph():
     builder = StateGraph(ReviewState)

@@ -4,7 +4,7 @@ Tests for the emotion-detection node.
 
 from unittest.mock import patch
 
-from app.nodes.emotion import detect_emotions
+from backend.nodes.emotion import detect_emotions
 
 
 def fake_emotion_model(text, truncation=True):

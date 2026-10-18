@@ -2,7 +2,7 @@
 Unit tests for cross-model reconciliation rules.
 """
 
-from app.nodes.reconciliation import (
+from backend.nodes.reconciliation import (
     reconcile_results,
 )
 

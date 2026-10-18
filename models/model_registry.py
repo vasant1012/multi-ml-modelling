@@ -10,7 +10,7 @@ from typing import Any
 import joblib
 from transformers import pipeline
 
-from app.config import settings
+from backend.config import settings
 
 
 @lru_cache(maxsize=1)

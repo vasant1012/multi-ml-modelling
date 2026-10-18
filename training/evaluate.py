@@ -11,7 +11,7 @@ from sklearn.metrics import (
     mean_absolute_error,
 )
 
-from app.config import settings
+from backend.config import settings
 
 
 def main():

@@ -4,8 +4,8 @@ Independently executable emotion-detection subgraph.
 
 from langgraph.graph import END, START, StateGraph
 
-from app.nodes.emotion import detect_emotions
-from app.state import ReviewState
+from backend.nodes.emotion import detect_emotions
+from backend.state import ReviewState
 
 
 def build_emotion_graph():

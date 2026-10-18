@@ -1,8 +1,10 @@
 """Extractive summarizer. It reuses source sentences and avoids hallucination."""
 import re
-from app.config import settings
-from app.nodes.sentiment import POSITIVE, NEGATIVE
-from app.state import ReviewState
+
+from backend.config import settings
+from backend.nodes.sentiment import NEGATIVE, POSITIVE
+from backend.state import ReviewState
+
 
 def summarize_review(state: ReviewState) -> dict:
     if "summary" not in state["requested_components"]:

@@ -1,7 +1,7 @@
 
 from unittest.mock import patch
 
-from app.graph import build_review_graph, review_graph
+from backend.graph import build_review_graph, review_graph
 
 # ------------------------------------------------------------------
 # Mock Emotion Model

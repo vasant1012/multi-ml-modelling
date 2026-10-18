@@ -7,7 +7,7 @@ from sklearn.model_selection import train_test_split
 
 sys.path.append("C:\\Users\\vasant.rajadhvax\\LocalBin_vasant.rajadhyax\\Projects\\multi-ml-modelling")
 
-from app.config import settings
+from backend.config import settings
 
 # ------------------------------------------------------------------
 # Constants
