@@ -1,8 +1,8 @@
 # Hotel Review Intelligence
 
-A modular hotel review analytics platform built using **LangGraph**, **FastAPI**, **scikit-learn**, and **local Transformer models**.
+A modular hotel review analytics platform built using **LangGraph**, **FastAPI**, **scikit-learn**, local **Transformer Models**, and a modern **React Intelligence Workspace**.
 
-The platform analyzes hotel reviews and converts unstructured customer feedback into actionable business insights through multiple AI and ML components.
+The platform converts unstructured hotel reviews into actionable operational insights using multiple AI, ML, and NLP components.
 
 ---
 
@@ -12,23 +12,31 @@ The platform analyzes hotel reviews and converts unstructured customer feedback 
 
 ✅ Sentiment Classification
 
-✅ Rating Prediction (1-5 Stars)
+✅ Rating Prediction (1–5 Stars)
 
 ✅ Emotion Detection
 
 ✅ Aspect-Based Sentiment Analysis (ABSA)
 
-✅ Review Summarization
+✅ Rule-Based Business Summarization
 
 ✅ Cross-Model Reconciliation
 
-✅ Batch Review Processing
+✅ Quality Assessment
+
+✅ Batch Review Processing API
 
 ✅ LangGraph Workflow Orchestration
 
 ✅ FastAPI REST APIs
 
 ✅ Automated Test Dashboard
+
+✅ React Intelligence Workspace
+
+✅ Dark / Light Theme Support
+
+✅ Analysis History
 
 ---
 
@@ -93,8 +101,6 @@ multi-ml-modelling/
 │   │   └── model_registry.py
 │   │
 │   ├── models/
-│   │   ├── sentiment/
-│   │   └── rating/
 │   │
 │   ├── training/
 │   │
@@ -110,6 +116,25 @@ multi-ml-modelling/
 │
 ├── Frontend/
 │
+│   ├── public/
+│   │
+│   ├── src/
+│   │
+│   │   ├── api/
+│   │   ├── assets/
+│   │   ├── components/
+│   │   ├── config/
+│   │   ├── hooks/
+│   │   ├── pages/
+│   │   ├── styles/
+│   │   ├── utils/
+│   │   ├── App.jsx
+│   │   └── main.jsx
+│   │
+│   ├── package.json
+│   ├── vite.config.js
+│   └── .env.example
+│
 ├── Data/
 │
 └── Logs/
@@ -119,7 +144,7 @@ multi-ml-modelling/
 
 # Expected Dataset
 
-Place the hotel review dataset inside:
+Place the dataset under:
 
 ```text
 Data/
@@ -190,7 +215,6 @@ HF_LOCAL_FILES_ONLY=true
 
 ```powershell
 python -m venv .venv
-
 .venv\Scripts\activate
 ```
 
@@ -198,7 +222,6 @@ python -m venv .venv
 
 ```bash
 python -m venv .venv
-
 source .venv/bin/activate
 ```
 
@@ -287,6 +310,51 @@ python -m training.evaluate
 
 ---
 
+# Sentiment Model Research
+
+Current production sentiment model:
+
+```text
+TF-IDF + Logistic Regression
+```
+
+A benchmark experiment was performed comparing:
+
+```text
+TF-IDF + Logistic Regression
+
+vs
+
+Sentence Transformer Embeddings
+(all-MiniLM-L6-v2)
+```
+
+Current findings:
+
+✅ TF‑IDF performs better on this dataset.
+
+✅ TF‑IDF significantly outperforms MiniLM on Neutral reviews.
+
+✅ MiniLM probabilities are better calibrated.
+
+✅ Further work is focused on:
+
+- Gold Standard Sentiment Dataset
+- Mixed Sentiment Framework
+- Human Validation
+- SetFit Experiments
+- Domain Adapted Transformers
+
+The current production model remains:
+
+```text
+TF-IDF + Logistic Regression
+```
+
+until a new model clearly surpasses it on a human-labeled benchmark set.
+
+---
+
 # Run FastAPI
 
 From:
@@ -315,6 +383,157 @@ http://localhost:8000/openapi.json
 
 ---
 
+# Frontend Setup
+
+Navigate:
+
+```bash
+cd Frontend
+```
+
+Create environment file:
+
+```bash
+cp .env.example .env
+```
+
+Example:
+
+```env
+VITE_API_BASE_URL=http://localhost:8000/api/v1
+```
+
+Install packages:
+
+```bash
+npm install
+```
+
+Run:
+
+```bash
+npm run dev
+```
+
+Open:
+
+```text
+http://localhost:5173
+```
+
+---
+
+# Frontend Features
+
+## Analyze Page
+
+Route:
+
+```text
+/analyze
+```
+
+Capabilities:
+
+✅ Review Input Workspace
+
+✅ Sentiment Visualization
+
+✅ Rating Visualization
+
+✅ Emotion Visualization
+
+✅ Quality Assessment
+
+✅ Aspect Intelligence Panel
+
+✅ Evidence Inspection
+
+✅ Summary Workspace
+
+✅ Local Review History Integration
+
+✅ API Health Monitoring
+
+✅ Responsive Layout
+
+✅ Dark / Light Theme Support
+
+---
+
+## History Page
+
+Route:
+
+```text
+/history
+```
+
+Capabilities:
+
+✅ Local Storage Persistence
+
+✅ Recent Analysis History
+
+✅ Timestamp Tracking
+
+✅ Review Preview
+
+✅ Sentiment Snapshot
+
+✅ Rating Snapshot
+
+✅ Clear History
+
+---
+
+## Batch Page
+
+Status:
+
+```text
+Placeholder Implemented
+```
+
+Route:
+
+```text
+/batch
+```
+
+Planned:
+
+- CSV Upload
+- Batch Analysis
+- Batch Dashboard
+- Download Results
+
+---
+
+## Insights Page
+
+Status:
+
+```text
+Placeholder Implemented
+```
+
+Route:
+
+```text
+/insights
+```
+
+Planned:
+
+- Aspect Trends
+- Rating Trends
+- Emotion Trends
+- Executive Dashboard
+- Business KPIs
+
+---
+
 # API Endpoints
 
 ## Health
@@ -323,89 +542,17 @@ http://localhost:8000/openapi.json
 GET /api/v1/health
 ```
 
-Response:
-
-```json
-{
-  "status": "healthy"
-}
-```
-
----
-
 ## Models
 
 ```http
 GET /api/v1/models
 ```
 
-Response:
-
-```json
-{
-  "sentiment_model": "LogisticRegression",
-  "rating_model": "LogisticRegression",
-  "emotion_model": "j-hartmann/emotion-english-distilroberta-base"
-}
-```
-
----
-
 ## Analyze Single Review
 
 ```http
 POST /api/v1/analyze
 ```
-
-Request:
-
-```json
-{
-  "review_text": "Amazing hotel and great staff"
-}
-```
-
-Response:
-
-```json
-{
-  "review_text": "Amazing hotel and great staff",
-
-  "sentiment": {
-    "label": "positive",
-    "confidence": 0.94
-  },
-
-  "rating": {
-    "prediction": 5,
-    "confidence": 0.78
-  },
-
-  "emotion": {
-    "dominant": "joy",
-    "confidence": 0.81
-  },
-
-  "aspects": [],
-
-  "summary": {
-    "guest_summary": "...",
-    "management_summary": "...",
-    "positive_highlights": [],
-    "improvement_opportunities": [],
-    "executive_summary": "..."
-  },
-
-  "quality": {
-    "status": "consistent",
-    "warnings": []
-  },
-
-  "errors": []
-}
-```
-
----
 
 ## Analyze Multiple Reviews
 
@@ -415,9 +562,62 @@ POST /api/v1/analyze-batch
 
 ---
 
-# ABSA Categories
+# Review Intelligence Output
 
-Current aspect taxonomy includes:
+Each review generates:
+
+```text
+Sentiment
+
+Rating
+
+Emotion
+
+ABSA
+
+Summary
+
+Quality Assessment
+```
+
+Example:
+
+```json
+{
+  "sentiment": {
+    "label": "negative"
+  },
+
+  "rating": {
+    "prediction": 2
+  },
+
+  "emotion": {
+    "dominant": "sadness"
+  },
+
+  "aspects": [
+    {
+      "aspect": "wifi_internet",
+      "sentiment": "negative"
+    }
+  ],
+
+  "summary": {
+    "guest_summary": "...",
+    "management_summary": "...",
+    "executive_summary": "..."
+  },
+
+  "quality": {
+    "status": "review_required"
+  }
+}
+```
+
+---
+
+# ABSA Categories
 
 ```text
 room
@@ -541,7 +741,7 @@ python tests/run_tests.py graph summary
 
 ---
 
-## Re-run Previously Failed Tests
+## Re-run Failed Tests
 
 ```bash
 python tests/run_tests.py failed
@@ -551,8 +751,6 @@ python tests/run_tests.py failed
 
 # Logging
 
-The platform uses a centralized logger.
-
 Logs are written to:
 
 ```text
@@ -561,7 +759,7 @@ Logs/
 hotel_review_workflow_YYYY-MM-DD.log
 ```
 
-Log format:
+Format:
 
 ```text
 Timestamp
@@ -586,12 +784,104 @@ Message
 | Reconciliation | ✅ Complete |
 | Summarization | ✅ Complete |
 | FastAPI API | ✅ Complete |
-| Batch Processing | ✅ Complete |
+| Batch Processing API | ✅ Complete |
 | Automated Testing | ✅ Complete |
 | Test Dashboard | ✅ Complete |
-| React Frontend | ⏳ Next Phase |
-| Dashboard Analytics | ⏳ Planned |
+| React Frontend Foundation | ✅ Complete |
+| Analyze Page | ✅ Complete |
+| History Page | ✅ Complete |
+| Theme Support | ✅ Complete |
+| Batch Analysis UI | 🔄 Placeholder |
+| Insights Dashboard UI | 🔄 Placeholder |
+| Sentiment Gold Dataset | 🔄 Planned |
+| Mixed Sentiment Framework | 🔄 Planned |
 | Local LLM Support | ⏳ Planned |
+
+---
+
+# Current Roadmap
+
+## Phase 1 ✅
+
+Completed
+
+```text
+Sentiment Classification
+Rating Prediction
+Emotion Detection
+ABSA
+Reconciliation
+Summarization
+FastAPI
+Automated Testing
+React Analyze Screen
+```
+
+---
+
+## Phase 2 🔄
+
+Current Focus
+
+```text
+Sentiment Gold Dataset
+
+Human Validation
+
+Mixed Sentiment Framework
+
+Regression Review Pack
+
+SetFit Evaluation
+```
+
+---
+
+## Phase 3 🔄
+
+Planned
+
+```text
+Batch Review Processing UI
+
+CSV Upload Workflow
+
+Download Results
+```
+
+---
+
+## Phase 4 🔄
+
+Planned
+
+```text
+Insights Dashboard
+
+Aspect Trends
+
+Emotion Trends
+
+Rating Analytics
+
+Quality Analytics
+```
+
+---
+
+## Phase 5 ⏳
+
+Future
+
+```text
+Traveler Persona Detection
+
+Local LLM Summaries
+
+Executive Reporting
+
+RAG-based Review Intelligence
+```
 
 ---
 
@@ -601,13 +891,23 @@ The platform follows a modular LangGraph architecture.
 
 Benefits:
 
-- Independent components
-- Easy testing
-- Easy model replacement
-- Explainable outputs
-- Local execution
-- No cloud dependency
-- Future local LLM support
-- Production-friendly structure
+- Independent Components
+- Easy Testing
+- Easy Model Replacement
+- Explainable Outputs
+- Local Execution
+- No Cloud Dependency
+- Production-Friendly Architecture
+- Future Local LLM Support
 
-Current implementation focuses on simplicity, traceability, maintainability, and real-world hotel review analytics.
+Current implementation prioritizes:
+
+```text
+Simplicity
+Traceability
+Reliability
+Explainability
+Maintainability
+```
+
+while building a foundation for advanced hotel review intelligence and operational analytics.
