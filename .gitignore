@@ -4,7 +4,7 @@ __pycache__/
 logs/*
 backend/tests/last_failed_tests.json
 backend/tests/pytest_report.json
-backend/models/sentiment_experiments/*
+backend/models/*
 frontend/node_modules/
 frontend/dist/
 frontend/.env

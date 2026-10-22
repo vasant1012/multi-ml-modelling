@@ -1,5 +1,6 @@
 import json
 import sys
+from pathlib import Path
 
 import joblib
 import pandas as pd
@@ -14,7 +15,7 @@ from sklearn.metrics import (
 )
 from sklearn.pipeline import Pipeline
 
-sys.path.append("C:\\Users\\vasant.rajadhvax\\LocalBin_vasant.rajadhyax\\Projects\\multi-ml-modelling")
+sys.path.append(str(Path.cwd()))  # Add the current working directory to sys.path
 from backend.config import settings
 
 # ---------------------------------------------------------
@@ -39,13 +40,9 @@ CLASS_MAP_PATH = MODEL_DIR / "class_mapping.json"
 
 print("Loading training data...")
 
-train_df = pd.read_csv(
-    settings.path("data/processed/train.csv")
-)
+train_df = pd.read_csv(settings.path("data/processed/train.csv"))
 
-valid_df = pd.read_csv(
-    settings.path("data/processed/validation.csv")
-)
+valid_df = pd.read_csv(settings.path("data/processed/validation.csv"))
 
 X_train = train_df["review"]
 y_train = train_df["rating"]
@@ -103,9 +100,7 @@ print("Training complete")
 # Validate
 # ---------------------------------------------------------
 
-predictions = model.predict(
-    X_valid
-)
+predictions = model.predict(X_valid)
 
 accuracy = accuracy_score(
     y_valid,

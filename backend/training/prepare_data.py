@@ -1,9 +1,12 @@
 import json
 import re
+import sys
+from pathlib import Path
 
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
+sys.path.append(str(Path.cwd()))  # Add the current working directory to sys.path
 from backend.config import settings
 
 # ------------------------------------------------------------------
@@ -18,6 +21,7 @@ POSITIVE = "positive"
 # ------------------------------------------------------------------
 # Sentiment Mapping
 # ------------------------------------------------------------------
+
 
 def sentiment_from_rating(rating: int) -> str:
     """
@@ -41,6 +45,7 @@ def sentiment_from_rating(rating: int) -> str:
 # ------------------------------------------------------------------
 # Duplicate Normalization
 # ------------------------------------------------------------------
+
 
 def normalize_for_duplicate_check(text: str) -> str:
     """
@@ -71,6 +76,7 @@ def normalize_for_duplicate_check(text: str) -> str:
 # Main Processing Logic
 # ------------------------------------------------------------------
 
+
 def main() -> None:
 
     # --------------------------------------------------------------
@@ -95,9 +101,7 @@ def main() -> None:
     missing = required - set(df.columns)
 
     if missing:
-        raise ValueError(
-            f"Missing required columns: {sorted(missing)}"
-        )
+        raise ValueError(f"Missing required columns: {sorted(missing)}")
 
     # Keep only required columns
     df = df[
@@ -125,9 +129,7 @@ def main() -> None:
     # --------------------------------------------------------------
 
     df["review"] = (
-        df["review"]
-        .astype(str)
-        .map(lambda x: re.sub(r"\s+", " ", x).strip())
+        df["review"].astype(str).map(lambda x: re.sub(r"\s+", " ", x).strip())
     )
 
     # Remove empty reviews after cleaning
@@ -137,16 +139,11 @@ def main() -> None:
     # Rating Cleanup
     # --------------------------------------------------------------
 
-    df["rating"] = pd.to_numeric(
-        df["rating"],
-        errors="coerce"
-    )
+    df["rating"] = pd.to_numeric(df["rating"], errors="coerce")
 
     df = df.dropna()
 
-    df = df.query(
-        "rating >= 1 and rating <= 5"
-    )
+    df = df.query("rating >= 1 and rating <= 5")
 
     df["rating"] = df["rating"].astype(int)
 
@@ -166,22 +163,15 @@ def main() -> None:
     # Duplicate Detection
     # --------------------------------------------------------------
 
-    df["review_key"] = df["review"].apply(
-        normalize_for_duplicate_check
-    )
+    df["review_key"] = df["review"].apply(normalize_for_duplicate_check)
 
     before_dedup = len(df)
 
-    df = df.drop_duplicates(
-        subset="review_key"
-    )
+    df = df.drop_duplicates(subset="review_key")
 
     after_dedup = len(df)
 
-    print(
-        f"Removed duplicates: "
-        f"{before_dedup - after_dedup:,}"
-    )
+    print(f"Removed duplicates: {before_dedup - after_dedup:,}")
 
     df = df.drop(columns=["review_key"])
 
@@ -189,36 +179,21 @@ def main() -> None:
     # Generate Metadata
     # --------------------------------------------------------------
 
-    df.insert(
-        0,
-        "review_id",
-        range(1, len(df) + 1)
-    )
+    df.insert(0, "review_id", range(1, len(df) + 1))
 
-    df["word_count"] = (
-        df["review"]
-        .str.split()
-        .str.len()
-    )
+    df["word_count"] = df["review"].str.split().str.len()
 
     # --------------------------------------------------------------
     # Create Sentiment Labels
     # --------------------------------------------------------------
 
-    df["sentiment"] = (
-        df["rating"]
-        .map(sentiment_from_rating)
-    )
+    df["sentiment"] = df["rating"].map(sentiment_from_rating)
 
     # --------------------------------------------------------------
     # Rating Distribution
     # --------------------------------------------------------------
 
-    rating_distribution = (
-        df["rating"]
-        .value_counts()
-        .sort_index()
-    )
+    rating_distribution = df["rating"].value_counts().sort_index()
 
     print("\nRating Distribution")
     print(rating_distribution)
@@ -244,15 +219,9 @@ def main() -> None:
             float(df["word_count"].mean()),
             2,
         ),
-        "rating_distribution": {
-            str(k): int(v)
-            for k, v in rating_distribution.items()
-        },
+        "rating_distribution": {str(k): int(v) for k, v in rating_distribution.items()},
         "sentiment_distribution": {
-            str(k): int(v)
-            for k, v in df["sentiment"]
-            .value_counts()
-            .items()
+            str(k): int(v) for k, v in df["sentiment"].value_counts().items()
         },
     }
 
@@ -269,10 +238,7 @@ def main() -> None:
             indent=4,
         )
 
-    print(
-        f"\nSaved dataset statistics:"
-        f"\n{stats_path}"
-    )
+    print(f"\nSaved dataset statistics:\n{stats_path}")
 
     # --------------------------------------------------------------
     # Train / Validation / Test Split
@@ -336,9 +302,7 @@ def main() -> None:
     print(f"Test       : {len(test):,}")
     print("-" * 40)
 
-    print(
-        "\nFiles written to:"
-    )
+    print("\nFiles written to:")
     print(out)
 
 

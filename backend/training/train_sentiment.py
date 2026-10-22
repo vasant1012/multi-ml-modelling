@@ -1,7 +1,7 @@
 import json
 import sys
+from pathlib import Path
 
-# from pathlib import Path
 import joblib
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -13,7 +13,7 @@ from sklearn.metrics import (
 )
 from sklearn.pipeline import Pipeline
 
-sys.path.append("C:\\Users\\vasant.rajadhvax\\LocalBin_vasant.rajadhyax\\Projects\\multi-ml-modelling")
+sys.path.append(str(Path.cwd()))  # Add the current working directory to sys.path
 from backend.config import settings
 
 # ------------------------------------------------------------------
