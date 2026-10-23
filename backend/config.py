@@ -1,4 +1,3 @@
-import sys
 from pathlib import Path
 
 from pydantic_settings import (
@@ -42,25 +41,7 @@ Hotel-Review-Intelligence/
 # Project Root Detection
 # ==========================================================
 
-PROJECT_ROOT = (
-    Path(__file__)
-    .resolve()
-    .parent
-    .parent
-)
-
-# Automatically add project root to PYTHONPATH.
-
-project_root = str(
-    PROJECT_ROOT
-)
-
-if project_root not in sys.path:
-
-    sys.path.insert(
-        0,
-        project_root,
-    )
+PROJECT_ROOT = Path.cwd()
 
 BACKEND_DIR = (
     PROJECT_ROOT

@@ -53,7 +53,7 @@ The platform converts unstructured hotel reviews into actionable operational ins
                   │
                   ▼
 
-   ┌───────────┬───────────┬───────────┬───────────┐
+   ┌───────────┬───────────┬───────────┐
    │           │           │           │
    ▼           ▼           ▼           ▼
 
@@ -117,9 +117,7 @@ multi-ml-modelling/
 ├── Frontend/
 │
 │   ├── public/
-│   │
 │   ├── src/
-│   │
 │   │   ├── api/
 │   │   ├── assets/
 │   │   ├── components/
@@ -144,7 +142,7 @@ multi-ml-modelling/
 
 # Expected Dataset
 
-Place the dataset under:
+Place the hotel review dataset under:
 
 ```text
 Data/
@@ -310,48 +308,64 @@ python -m training.evaluate
 
 ---
 
-# Sentiment Model Research
+# Sentiment Model Benchmark Research
 
-Current production sentiment model:
+A dedicated benchmarking exercise was completed before selecting the production sentiment model.
 
-```text
-TF-IDF + Logistic Regression
-```
-
-A benchmark experiment was performed comparing:
+## Models Evaluated
 
 ```text
+CountVectorizer + Logistic Regression
+
 TF-IDF + Logistic Regression
 
-vs
+TF-IDF + LinearSVC
 
 Sentence Transformer Embeddings
 (all-MiniLM-L6-v2)
 ```
 
-Current findings:
+## Benchmark Results
 
-✅ TF‑IDF performs better on this dataset.
+| Model | Accuracy | Balanced Accuracy | Macro F1 |
+|---------|---------:|---------:|---------:|
+| CountVectorizer + Logistic Regression | 0.8458 | 0.6842 | 0.6853 |
+| TF-IDF + Logistic Regression | 0.8407 | 0.7226 | 0.7059 |
+| TF-IDF + LinearSVC | 0.8707 | 0.6668 | 0.6747 |
 
-✅ TF‑IDF significantly outperforms MiniLM on Neutral reviews.
+## Conclusions
 
-✅ MiniLM probabilities are better calibrated.
+✅ TF-IDF + Logistic Regression provides the best overall balance.
 
-✅ Further work is focused on:
+✅ TF-IDF handles Neutral reviews significantly better.
 
-- Gold Standard Sentiment Dataset
-- Mixed Sentiment Framework
-- Human Validation
-- SetFit Experiments
-- Domain Adapted Transformers
+✅ MiniLM embeddings improve calibration but underperform on classification quality.
 
-The current production model remains:
+✅ TF-IDF + LinearSVC improves Accuracy but reduces Balanced Accuracy and Macro F1.
+
+✅ CountVectorizer performs well but does not outperform TF-IDF.
+
+## Production Decision
+
+Selected production model:
 
 ```text
 TF-IDF + Logistic Regression
 ```
 
-until a new model clearly surpasses it on a human-labeled benchmark set.
+Sentiment-model experimentation has been frozen for Version 1 so that the project can focus on completing user-facing functionality.
+
+Future research items:
+
+```text
+Human Gold Dataset
+
+Mixed Sentiment Framework
+
+SetFit Evaluation
+
+Domain Adapted Transformers
+```
 
 ---
 
@@ -415,7 +429,7 @@ Run:
 npm run dev
 ```
 
-Open:
+Application:
 
 ```text
 http://localhost:5173
@@ -423,9 +437,9 @@ http://localhost:5173
 
 ---
 
-# Frontend Features
+# Frontend Status
 
-## Analyze Page
+## Analyze Page ✅ Complete
 
 Route:
 
@@ -437,31 +451,35 @@ Capabilities:
 
 ✅ Review Input Workspace
 
-✅ Sentiment Visualization
+✅ Sentiment Intelligence Card
 
-✅ Rating Visualization
+✅ Rating Intelligence Card
 
-✅ Emotion Visualization
+✅ Emotion Intelligence Card
 
 ✅ Quality Assessment
 
 ✅ Aspect Intelligence Panel
 
-✅ Evidence Inspection
+✅ Evidence Viewer
 
 ✅ Summary Workspace
 
-✅ Local Review History Integration
-
 ✅ API Health Monitoring
+
+✅ Keyboard Shortcuts
 
 ✅ Responsive Layout
 
-✅ Dark / Light Theme Support
+✅ Dark Theme
+
+✅ Light Theme
+
+✅ Local Review History Integration
 
 ---
 
-## History Page
+## History Page ✅ Complete
 
 Route:
 
@@ -471,11 +489,7 @@ Route:
 
 Capabilities:
 
-✅ Local Storage Persistence
-
-✅ Recent Analysis History
-
-✅ Timestamp Tracking
+✅ Analysis History
 
 ✅ Review Preview
 
@@ -483,17 +497,15 @@ Capabilities:
 
 ✅ Rating Snapshot
 
+✅ Timestamp Tracking
+
 ✅ Clear History
+
+✅ Local Storage Persistence
 
 ---
 
-## Batch Page
-
-Status:
-
-```text
-Placeholder Implemented
-```
+## Batch Page 🔄 In Progress
 
 Route:
 
@@ -501,22 +513,23 @@ Route:
 /batch
 ```
 
-Planned:
-
-- CSV Upload
-- Batch Analysis
-- Batch Dashboard
-- Download Results
-
----
-
-## Insights Page
-
-Status:
+Current Status:
 
 ```text
 Placeholder Implemented
 ```
+
+Planned:
+
+- CSV Upload
+- Batch Processing
+- Progress Tracking
+- Download Results
+- Batch Statistics
+
+---
+
+## Insights Dashboard 🔄 In Progress
 
 Route:
 
@@ -524,13 +537,20 @@ Route:
 /insights
 ```
 
+Current Status:
+
+```text
+Placeholder Implemented
+```
+
 Planned:
 
-- Aspect Trends
+- Sentiment Trends
 - Rating Trends
+- Aspect Trends
 - Emotion Trends
 - Executive Dashboard
-- Business KPIs
+- Quality Analytics
 
 ---
 
@@ -656,8 +676,6 @@ noise
 ---
 
 # Summarization Outputs
-
-Each review generates:
 
 ```text
 guest_summary
@@ -787,23 +805,23 @@ Message
 | Batch Processing API | ✅ Complete |
 | Automated Testing | ✅ Complete |
 | Test Dashboard | ✅ Complete |
+| Sentiment Benchmark Research | ✅ Complete |
+| Production Sentiment Model Selection | ✅ Complete |
 | React Frontend Foundation | ✅ Complete |
 | Analyze Page | ✅ Complete |
 | History Page | ✅ Complete |
 | Theme Support | ✅ Complete |
-| Batch Analysis UI | 🔄 Placeholder |
-| Insights Dashboard UI | 🔄 Placeholder |
-| Sentiment Gold Dataset | 🔄 Planned |
-| Mixed Sentiment Framework | 🔄 Planned |
-| Local LLM Support | ⏳ Planned |
+| Batch Analysis UI | 🔄 In Progress |
+| Insights Dashboard UI | 🔄 In Progress |
+| Sentiment Gold Dataset | ⏳ Future Enhancement |
+| Mixed Sentiment Framework | ⏳ Future Enhancement |
+| Local LLM Support | ⏳ Future Enhancement |
 
 ---
 
 # Current Roadmap
 
-## Phase 1 ✅
-
-Completed
+## Phase 1 ✅ Complete
 
 ```text
 Sentiment Classification
@@ -815,47 +833,25 @@ Summarization
 FastAPI
 Automated Testing
 React Analyze Screen
+History Screen
+Theme Support
 ```
 
 ---
 
-## Phase 2 🔄
+## Phase 2 🔄 Current Focus
 
-Current Focus
-
-```text
-Sentiment Gold Dataset
-
-Human Validation
-
-Mixed Sentiment Framework
-
-Regression Review Pack
-
-SetFit Evaluation
-```
-
----
-
-## Phase 3 🔄
-
-Planned
+Frontend Completion
 
 ```text
-Batch Review Processing UI
+Batch Analysis Page
 
 CSV Upload Workflow
 
+Batch Processing Experience
+
 Download Results
-```
 
----
-
-## Phase 4 🔄
-
-Planned
-
-```text
 Insights Dashboard
 
 Aspect Trends
@@ -869,18 +865,34 @@ Quality Analytics
 
 ---
 
-## Phase 5 ⏳
-
-Future
+## Phase 3 ⏳ Future Enhancements
 
 ```text
-Traveler Persona Detection
+Sentiment Gold Dataset
 
-Local LLM Summaries
+Mixed Sentiment Framework
+
+Traveler Persona Detection
 
 Executive Reporting
 
-RAG-based Review Intelligence
+Local LLM Summaries
+```
+
+---
+
+## Phase 4 ⏳ Long-Term Vision
+
+```text
+Portfolio Analytics
+
+Multi-Hotel Benchmarking
+
+Trend Forecasting
+
+Recommendation Engine
+
+RAG-Based Review Intelligence
 ```
 
 ---
@@ -910,4 +922,4 @@ Explainability
 Maintainability
 ```
 
-while building a foundation for advanced hotel review intelligence and operational analytics.
+while establishing a practical foundation for advanced hotel review intelligence and operational analytics.

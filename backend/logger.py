@@ -3,13 +3,13 @@ import os
 from datetime import datetime
 from logging.handlers import TimedRotatingFileHandler
 
-from backend.config import project_root
+from backend.config import PROJECT_ROOT
 
 now = datetime.now()
 date = now.strftime("%Y-%m-%d")
 
 # Ensure 'logs' folder exists
-log_dir = f"{project_root}/logs"
+log_dir = f"{PROJECT_ROOT}/logs"
 os.makedirs(log_dir, exist_ok=True)
 
 # Log file path
