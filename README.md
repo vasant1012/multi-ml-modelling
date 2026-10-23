@@ -133,6 +133,12 @@ multi-ml-modelling/
 │   ├── vite.config.js
 │   └── .env.example
 │
+├── Docs/
+│   ├── PROJECT_STATUS.md
+│   ├── ARCHITECTURE.md
+│   ├── MODEL_RESEARCH.md
+│   └── FRONTEND_ROADMAP.md
+│
 ├── Data/
 │
 └── Logs/
