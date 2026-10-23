@@ -86,7 +86,7 @@ Sentiment    Rating     Emotion      ABSA
 ```text
 multi-ml-modelling/
 
-├── Backend/
+├── backend/
 │
 │   ├── backend/
 │   │
@@ -114,7 +114,7 @@ multi-ml-modelling/
 │       ├── test_emotion_graph.py
 │       └── test_summarization.py
 │
-├── Frontend/
+├── frontend/
 │
 │   ├── public/
 │   ├── src/
@@ -133,15 +133,15 @@ multi-ml-modelling/
 │   ├── vite.config.js
 │   └── .env.example
 │
-├── Docs/
+├── docs/
 │   ├── PROJECT_STATUS.md
 │   ├── ARCHITECTURE.md
 │   ├── MODEL_RESEARCH.md
 │   └── FRONTEND_ROADMAP.md
 │
-├── Data/
+├── data/
 │
-└── Logs/
+└── logs/
 ```
 
 ---
@@ -234,7 +234,7 @@ source .venv/bin/activate
 ## Install Dependencies
 
 ```bash
-pip install -r requirements.txt
+pip install -r backend/requirements.txt
 ```
 
 ---
@@ -250,7 +250,7 @@ cd Backend
 Run:
 
 ```bash
-python -m training.prepare_data
+python -m backend.training.prepare_data
 ```
 
 Output:
@@ -271,7 +271,7 @@ Data/processed/
 ## Train Sentiment Model
 
 ```bash
-python -m training.train_sentiment
+python -m backend.training.train_sentiment
 ```
 
 Output:
@@ -290,7 +290,7 @@ Backend/models/sentiment/
 ## Train Rating Model
 
 ```bash
-python -m training.train_rating
+python -m backend.training.train_rating
 ```
 
 Output:

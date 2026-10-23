@@ -1,0 +1,11 @@
+{
+    "algorithm": "LogisticRegression",
+    "vectorizer": "TF-IDF",
+    "ngram_range": [
+        1,
+        2
+    ],
+    "max_features": 50000,
+    "train_records": 14343,
+    "validation_records": 2049
+}
