@@ -39,3 +39,46 @@
 .metric-footer {
     align-self: end;
 }
+
+.validation-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.summary-row:last-child {
+    border-bottom: none;
+}
+
+.summary-row span {
+    color: var(--text-secondary);
+}
+
+.summary-row strong {
+    font-weight: 700;
+}
+
+.batch-results-card {
+  width: 100%;
+}
+
+.review-cell {
+  max-width: 500px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+}
