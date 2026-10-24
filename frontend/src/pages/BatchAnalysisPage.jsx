@@ -5,6 +5,7 @@ import BatchValidationSummary from "../components/batch/BatchValidationSummary";
 import BatchPreviewTable from "../components/batch/BatchPreviewTable";
 import BatchResultsTable from "../components/batch/BatchResultsTable";
 import BatchDownloadActions from "../components/batch/BatchDownloadActions";
+import BatchSummaryCards from "../components/batch/BatchSummaryCards";
 
 import useBatchAnalysis from "../hooks/useBatchAnalysis";
 
@@ -32,7 +33,8 @@ export default function BatchAnalysisPage() {
     try {
       const parsed = await parseCsv(file);
 
-      const validation = validateCsv(parsed);
+      const validation =
+        validateCsv(parsed);
 
       setFileName(file.name);
       setRows(validation.rows || []);
@@ -48,6 +50,7 @@ export default function BatchAnalysisPage() {
 
       setRows([]);
       setColumns([]);
+
       resetBatch();
     }
   }
@@ -135,8 +138,7 @@ export default function BatchAnalysisPage() {
             <p>
               Upload a CSV containing
               hotel reviews to validate,
-              preview, and analyze in
-              bulk.
+              preview, and analyze in bulk.
             </p>
           </div>
         )}
@@ -168,9 +170,15 @@ export default function BatchAnalysisPage() {
         )}
 
         {status === "success" && (
-          <BatchResultsTable
-            results={results}
-          />
+          <>
+            <BatchSummaryCards
+              results={results}
+            />
+
+            <BatchResultsTable
+              results={results}
+            />
+          </>
         )}
 
         {status !== "success" &&
