@@ -14,11 +14,30 @@ import {
   validateCsv
 } from "../utils/csv";
 
+import {
+  saveLatestBatch
+} from "../utils/storage";
+
 export default function BatchAnalysisPage() {
-  const [fileName, setFileName] = useState("");
-  const [rows, setRows] = useState([]);
-  const [errors, setErrors] = useState([]);
-  const [columns, setColumns] = useState([]);
+  const [
+    fileName,
+    setFileName
+  ] = useState("");
+
+  const [
+    rows,
+    setRows
+  ] = useState([]);
+
+  const [
+    errors,
+    setErrors
+  ] = useState([]);
+
+  const [
+    columns,
+    setColumns
+  ] = useState([]);
 
   const {
     status,
@@ -31,15 +50,25 @@ export default function BatchAnalysisPage() {
 
   async function handleFile(file) {
     try {
-      const parsed = await parseCsv(file);
+      const parsed =
+        await parseCsv(file);
 
       const validation =
         validateCsv(parsed);
 
       setFileName(file.name);
-      setRows(validation.rows || []);
-      setErrors(validation.errors || []);
-      setColumns(validation.columns || []);
+
+      setRows(
+        validation.rows || []
+      );
+
+      setErrors(
+        validation.errors || []
+      );
+
+      setColumns(
+        validation.columns || []
+      );
 
       resetBatch();
     } catch (err) {
@@ -60,7 +89,18 @@ export default function BatchAnalysisPage() {
       return;
     }
 
-    await run(rows);
+    const batchResults =
+      await run(rows);
+
+    if (
+      Array.isArray(batchResults) &&
+      batchResults.length > 0
+    ) {
+      saveLatestBatch({
+        fileName,
+        results: batchResults
+      });
+    }
   }
 
   function reset() {
@@ -74,7 +114,6 @@ export default function BatchAnalysisPage() {
 
   return (
     <div className="analysis-page">
-      {/* LEFT PANEL */}
       <div className="review-workspace">
         <BatchUploadPanel
           fileName={fileName}
@@ -85,9 +124,13 @@ export default function BatchAnalysisPage() {
         <BatchValidationSummary
           fileName={fileName}
           rowCount={rows.length}
-          columnCount={columns.length}
+          columnCount={
+            columns.length
+          }
           validRows={rows.length}
-          errorCount={errors.length}
+          errorCount={
+            errors.length
+          }
         />
 
         <div className="card">
@@ -109,8 +152,9 @@ export default function BatchAnalysisPage() {
           {status === "success" && (
             <p className="success-text">
               Analysis completed for{" "}
-              {summary?.totalReviews || 0}
-              {" "}reviews.
+              {summary?.totalReviews ||
+                0}{" "}
+              reviews.
             </p>
           )}
 
@@ -129,16 +173,18 @@ export default function BatchAnalysisPage() {
           )}
       </div>
 
-      {/* RIGHT PANEL */}
       <section className="intelligence-workspace">
         {!fileName && (
           <div className="placeholder-page">
-            <h2>Upload a CSV File</h2>
+            <h2>
+              Upload a CSV File
+            </h2>
 
             <p>
               Upload a CSV containing
               hotel reviews to validate,
-              preview, and analyze in bulk.
+              preview, and analyze in
+              bulk.
             </p>
           </div>
         )}
