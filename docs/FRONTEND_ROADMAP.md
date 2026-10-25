@@ -1,13 +1,26 @@
 # Frontend Roadmap
 
-## Design Goals
+## Version 1 Status
 
-- Landscape-First
-- Minimal Scrolling
-- Explainable Intelligence
-- Executive-Friendly
-- Responsive
-- Dark Mode
+✅ COMPLETE
+
+The planned Version 1 frontend experience for Hotel Review Intelligence is now implemented.
+
+---
+
+# Design Goals
+
+Version 1 was designed around the following principles:
+
+- ✅ Landscape-First
+- ✅ Minimal Scrolling
+- ✅ Explainable Intelligence
+- ✅ Executive-Friendly
+- ✅ Responsive Design
+- ✅ Dark Mode
+- ✅ Light Mode
+- ✅ Reusable Components
+- ✅ Clear Loading / Error / Empty States
 
 ---
 
@@ -17,21 +30,16 @@
 
 Implemented:
 
-✅ Review Input
-
-✅ Sentiment
-
-✅ Rating
-
-✅ Emotion
-
-✅ ABSA
-
-✅ Summaries
-
-✅ Quality Assessment
-
-✅ Evidence Viewer
+- ✅ Review Input
+- ✅ Sentiment
+- ✅ Rating
+- ✅ Emotion
+- ✅ ABSA
+- ✅ Summaries
+- ✅ Quality Assessment
+- ✅ Evidence Viewer
+- ✅ Responsive Intelligence Workspace
+- ✅ Light / Dark Theme Support
 
 ---
 
@@ -39,122 +47,231 @@ Implemented:
 
 Implemented:
 
-✅ Local History
-
-✅ Timestamps
-
-✅ Review Preview
-
-✅ Clear History
+- ✅ Local History
+- ✅ Timestamps
+- ✅ Review Preview
+- ✅ Sentiment Snapshot
+- ✅ Rating Snapshot
+- ✅ Clear History
+- ✅ Historical Analysis Navigation
+- ✅ Analyze Page Rehydration
+- ✅ Result Restoration Without Re-analysis
+- ✅ Refresh Restoration
 
 ---
 
-# Phase 2 🔄 Current Focus
+# Phase 2 ✅ Complete
 
-## Batch Page
-
-Planned:
+## Batch Analysis Page
 
 ### CSV Upload
 
-```text
-Upload reviews
-```
+Implemented:
+
+- ✅ File Selection
+- ✅ Drag and Drop
+- ✅ Papa Parse Integration
+- ✅ Quoted CSV Support
+- ✅ Multiline CSV Support
+
+### Validation
+
+Implemented:
+
+- ✅ Required `review_text` Column
+- ✅ Review Length Validation
+- ✅ Empty Row Handling
+- ✅ Trailing Blank Row Handling
+- ✅ Validation Summary
+
+### Preview
+
+Implemented:
+
+- ✅ CSV Review Preview
+- ✅ Row Information
 
 ### Processing
 
-```text
-Analyze many reviews
-```
+Implemented:
+
+- ✅ Existing `/api/v1/analyze-batch` Integration
+- ✅ Batch Loading State
+- ✅ Batch Error State
+- ✅ Successful Result Handling
 
 ### Results
 
-```text
-Summary statistics
+Implemented:
 
-Sentiment distribution
-
-Rating distribution
-```
+- ✅ Full-Width Results Workspace
+- ✅ Review Text
+- ✅ Sentiment
+- ✅ Rating
+- ✅ Emotion
+- ✅ Primary Aspect
+- ✅ Quality
+- ✅ Pagination
+- ✅ Responsive Results Table
 
 ### Download
 
-```text
-CSV
+Implemented:
 
-Excel
-```
+- ✅ CSV Result Export
+
+Deferred:
+
+- ⏳ Native XLSX Export
 
 ---
 
-# Phase 3 🔄 Current Focus
+# Phase 3 ✅ Complete
 
 ## Insights Dashboard
 
-Widgets:
+### Portfolio Summary
 
-### Sentiment Trends
+Implemented:
 
-```text
-Positive
+- ✅ Total Reviews
+- ✅ Average Rating
+- ✅ Positive Percentage
+- ✅ Neutral Percentage
+- ✅ Negative Percentage
+- ✅ Top Emotion
+- ✅ Top Positive Aspect
+- ✅ Top Negative Aspect
 
-Negative
+### Sentiment Analytics
 
-Neutral
-```
+Implemented:
 
-### Ratings
+- ✅ Sentiment Distribution
+- ✅ Positive / Neutral / Negative Breakdown
+- ✅ Interactive Visualization
 
-```text
-Average Rating
+### Rating Analytics
 
-Distribution
-```
+Implemented:
 
-### Aspect Trends
+- ✅ Average Rating
+- ✅ Rating Distribution
+- ✅ Interactive Visualization
 
-```text
-Top Positive
+### Emotion Analytics
 
-Top Negative
-```
+Implemented:
 
-### Emotions
+- ✅ Emotion Distribution
+- ✅ Leading Emotion
+- ✅ Interactive Visualization
 
-```text
-Emotion Distribution
-```
+### Aspect Intelligence
+
+Implemented:
+
+- ✅ Positive Aspect Distribution
+- ✅ Negative Aspect Distribution
+- ✅ Positive vs Negative Comparison
+- ✅ Leading Strength
+- ✅ Leading Improvement Opportunity
 
 ### Executive Summary
 
-Management-level overview.
+Implemented:
+
+- ✅ Portfolio Position
+- ✅ Executive Narrative
+- ✅ Leading Strength
+- ✅ Improvement Opportunity
+- ✅ Recommended Focus
+- ✅ Deterministic Analytics-Based Summary
 
 ---
 
-# Future Enhancements
+# Shared Analytics Architecture
 
-## Persona Detection
+Version 1 centralizes batch analytics in:
 
-Examples:
+`frontend/src/utils/batchAnalytics.js`
 
-```text
-Family Traveler
+The shared analytics layer is used by the Batch / Insights experience for:
 
-Business Traveler
+- Sentiment Aggregation
+- Sentiment Percentages
+- Rating Distribution
+- Average Rating
+- Emotion Distribution
+- Aspect Mentions
+- Positive Aspect Counts
+- Negative Aspect Counts
+- Leading Emotion
+- Leading Positive Aspect
+- Leading Negative Aspect
 
-Foodie
+This prevents analytics calculations from being independently duplicated across frontend views.
 
-Budget Traveler
-```
+---
 
-## Executive Reports
+# Frontend Persistence
 
-```text
-One-click report generation
-```
+## Individual Review History
 
-## Operational Recommendations
+Stored independently for the Analyze / History workflow.
 
-```text
-Recurrence-based insights
-```
+Key:
+
+`hri-history`
+
+## Latest Batch
+
+Stored independently for the Batch / Insights workflow.
+
+Key:
+
+`hri-latest-batch`
+
+This allows Insights to restore the latest completed batch after navigation or browser refresh.
+
+---
+
+# Version 1 Deferred Items
+
+The following work is intentionally deferred.
+
+## Version 1.1 / Version 2 Candidates
+
+- Native XLSX Export
+- Historical Batch Library
+- Batch-to-Batch Comparison
+- Time-Based Sentiment Trends
+- Advanced Dashboard Filters
+- Hotel / Property Filtering
+- Persona Detection
+- One-Click Executive Reports
+- Historical Executive Analytics
+- Additional Operational Recommendations
+
+## Engineering Hardening
+
+- Frontend Automated Tests
+- Route-Level Lazy Loading
+- JavaScript Bundle Optimization
+- Production Dependency Remediation
+- Production Deployment Hardening
+
+---
+
+# Version 1 Frontend Freeze
+
+The Hotel Review Intelligence Version 1 frontend feature scope is complete.
+
+Future frontend work should be classified as either:
+
+1. Production hardening
+2. Defect correction
+3. Version 1.1 enhancement
+4. Version 2 feature development
+
+New feature work should not be added to Version 1 unless the Version 1 scope is explicitly reopened.
