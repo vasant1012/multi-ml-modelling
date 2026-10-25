@@ -1,11 +1,22 @@
-import { useMemo } from "react";
-import { Link } from "react-router-dom";
+import {
+  useMemo,
+  useState
+} from "react";
+
+import {
+  Link
+} from "react-router-dom";
 
 import BatchSummaryCards from "../components/batch/BatchSummaryCards";
 
+import SentimentChart from "../components/insights/SentimentChart";
+import RatingChart from "../components/insights/RatingChart";
+import EmotionChart from "../components/insights/EmotionChart";
+import AspectChart from "../components/insights/AspectChart";
+import ExecutiveSummary from "../components/insights/ExecutiveSummary";
+
 import {
-  calculateBatchAnalytics,
-  formatAnalyticsLabel
+  calculateBatchAnalytics
 } from "../utils/batchAnalytics";
 
 import {
@@ -21,7 +32,9 @@ function formatTimestamp(value) {
   const date = new Date(value);
 
   if (
-    Number.isNaN(date.getTime())
+    Number.isNaN(
+      date.getTime()
+    )
   ) {
     return "Unknown";
   }
@@ -30,8 +43,12 @@ function formatTimestamp(value) {
 }
 
 export default function InsightsPage() {
-  const latestBatch =
-    getLatestBatch();
+  const [
+    latestBatch,
+    setLatestBatch
+  ] = useState(() =>
+    getLatestBatch()
+  );
 
   const analytics = useMemo(
     () =>
@@ -43,13 +60,12 @@ export default function InsightsPage() {
 
   function clearInsights() {
     clearLatestBatch();
-
-    window.location.reload();
+    setLatestBatch(null);
   }
 
   if (
     !latestBatch ||
-    !latestBatch.results.length
+    !latestBatch.results?.length
   ) {
     return (
       <div className="placeholder-page">
@@ -81,9 +97,9 @@ export default function InsightsPage() {
   }
 
   return (
-    <div>
-      <header className="page-header">
-        <div>
+    <div className="insights-page">
+      <header className="insights-compact-header">
+        <div className="insights-heading">
           <span className="eyebrow">
             Portfolio analytics
           </span>
@@ -100,9 +116,40 @@ export default function InsightsPage() {
           </p>
         </div>
 
-        <div className="topbar-actions">
+        <div className="insights-source-summary">
+          <span className="eyebrow">
+            Latest source
+          </span>
+
+          <strong>
+            {latestBatch.fileName}
+          </strong>
+
+          <div className="insights-source-meta">
+            <span>
+              {analytics.totalReviews}{" "}
+              reviews
+            </span>
+
+            <span
+              className="insights-meta-divider"
+              aria-hidden="true"
+            >
+              •
+            </span>
+
+            <span>
+              Analyzed{" "}
+              {formatTimestamp(
+                latestBatch.createdAt
+              )}
+            </span>
+          </div>
+        </div>
+
+        <div className="insights-header-actions">
           <Link
-            className="button button-secondary"
+            className="button button-primary"
             to="/batch"
           >
             Open Batch Analysis
@@ -118,92 +165,37 @@ export default function InsightsPage() {
         </div>
       </header>
 
-      <section className="card">
-        <div className="card-header">
-          <div>
-            <span className="eyebrow">
-              Latest source
-            </span>
-
-            <h2>
-              {latestBatch.fileName}
-            </h2>
-          </div>
-
-          <span className="badge">
-            {analytics.totalReviews}{" "}
-            reviews
-          </span>
-        </div>
-
-        <div className="insight-grid">
-          <div className="insight-list">
-            <h3>
-              Analysis details
-            </h3>
-
-            <ul>
-              <li>
-                Analyzed:{" "}
-                {formatTimestamp(
-                  latestBatch.createdAt
-                )}
-              </li>
-
-              <li>
-                Average rating:{" "}
-                {analytics.ratedReviewCount
-                  ? `${analytics.averageRating.toFixed(
-                      2
-                    )}/5`
-                  : "-"}
-              </li>
-            </ul>
-          </div>
-
-          <div className="insight-list">
-            <h3>
-              Leading signals
-            </h3>
-
-            <ul>
-              <li>
-                Top emotion:{" "}
-                {formatAnalyticsLabel(
-                  analytics.topEmotion
-                    ?.label
-                )}
-              </li>
-
-              <li>
-                Top positive aspect:{" "}
-                {formatAnalyticsLabel(
-                  analytics
-                    .topPositiveAspect
-                    ?.label
-                )}
-              </li>
-
-              <li>
-                Top negative aspect:{" "}
-                {formatAnalyticsLabel(
-                  analytics
-                    .topNegativeAspect
-                    ?.label
-                )}
-              </li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <section
-        style={{ marginTop: "16px" }}
-      >
+      <section className="insights-kpi-section">
         <BatchSummaryCards
-          results={latestBatch.results}
+          results={
+            latestBatch.results
+          }
         />
       </section>
+
+      <section className="insights-chart-grid">
+        <SentimentChart
+          analytics={analytics}
+        />
+
+        <RatingChart
+          analytics={analytics}
+        />
+      </section>
+
+      <section className="insights-chart-grid insights-secondary-charts">
+        <EmotionChart
+          analytics={analytics}
+        />
+
+        <AspectChart
+          analytics={analytics}
+        />
+      </section>
+
+      <ExecutiveSummary
+        analytics={analytics}
+      />
     </div>
   );
 }
