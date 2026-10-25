@@ -1,6 +1,12 @@
 export default function BatchDownloadActions({
   results = []
 }) {
+  function escapeCsv(value) {
+    return `"${String(
+      value ?? ""
+    ).replace(/"/g, '""')}"`;
+  }
+
   function downloadCsv() {
     if (!results.length) {
       return;
@@ -33,21 +39,21 @@ export default function BatchDownloadActions({
             result.sentiment?.label || ""
           ),
 
-          result.sentiment
-            ?.confidence ?? "",
+          result.sentiment?.confidence ??
+            "",
 
-          result.rating
-            ?.prediction ?? "",
+          result.rating?.prediction ??
+            "",
 
-          result.rating
-            ?.confidence ?? "",
+          result.rating?.confidence ??
+            "",
 
           escapeCsv(
             result.emotion?.dominant || ""
           ),
 
-          result.emotion
-            ?.confidence ?? "",
+          result.emotion?.confidence ??
+            "",
 
           escapeCsv(
             primaryAspect.aspect || ""
@@ -72,7 +78,8 @@ export default function BatchDownloadActions({
     const blob = new Blob(
       [csvContent],
       {
-        type: "text/csv;charset=utf-8;"
+        type:
+          "text/csv;charset=utf-8;"
       }
     );
 
@@ -91,47 +98,32 @@ export default function BatchDownloadActions({
       `hotel-review-batch-${Date.now()}.csv`
     );
 
-    document.body.appendChild(
-      link
-    );
-
+    document.body.appendChild(link);
     link.click();
-
-    document.body.removeChild(
-      link
-    );
+    document.body.removeChild(link);
 
     window.URL.revokeObjectURL(url);
   }
 
-  function escapeCsv(value) {
-    return `"${String(
-      value ?? ""
-    ).replace(/"/g, '""')}"`;
-  }
-
   return (
-    <div className="card">
-      <h3>Download Results</h3>
-
+    <div className="batch-download-actions">
       <button
-        className="primary-btn"
+        type="button"
+        className="button button-secondary"
         disabled={!results.length}
         onClick={downloadCsv}
       >
         Download CSV
       </button>
 
-      {results.length > 0 && (
-        <p className="download-note">
-          Export {results.length} analyzed
-          review
-          {results.length !== 1
-            ? "s"
-            : ""}
-          .
-        </p>
-      )}
+      <span className="batch-download-note">
+        Export {results.length} analyzed{" "}
+        review
+        {results.length !== 1
+          ? "s"
+          : ""}
+        .
+      </span>
     </div>
   );
 }

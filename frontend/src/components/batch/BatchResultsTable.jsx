@@ -1,4 +1,8 @@
-import { useMemo, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useState
+} from "react";
 
 const PAGE_SIZE = 25;
 
@@ -9,11 +13,20 @@ export default function BatchResultsTable({
 
   const totalPages = Math.max(
     1,
-    Math.ceil(results.length / PAGE_SIZE)
+    Math.ceil(
+      results.length / PAGE_SIZE
+    )
   );
 
+  useEffect(() => {
+    if (page > totalPages) {
+      setPage(totalPages);
+    }
+  }, [page, totalPages]);
+
   const currentRows = useMemo(() => {
-    const start = (page - 1) * PAGE_SIZE;
+    const start =
+      (page - 1) * PAGE_SIZE;
 
     return results.slice(
       start,
@@ -26,93 +39,172 @@ export default function BatchResultsTable({
       return "-";
     }
 
-    return result.aspects[0].aspect;
+    return (
+      result.aspects[0]?.aspect ||
+      "-"
+    );
+  }
+
+  function getDisplayValue(
+    value,
+    fallback = "-"
+  ) {
+    if (
+      value === null ||
+      value === undefined ||
+      value === ""
+    ) {
+      return fallback;
+    }
+
+    return value;
   }
 
   return (
     <div className="card batch-results-card">
-      <div className="table-header">
-        <h3>Batch Analysis Results</h3>
+      <div className="batch-results-header">
+        <div className="batch-results-title">
+          <h3>
+            Batch Analysis Results
+          </h3>
 
-        <span>
-          {results.length} Reviews
-        </span>
+          <span className="batch-results-count">
+            {results.length}{" "}
+            {results.length === 1
+              ? "Review"
+              : "Reviews"}
+          </span>
+        </div>
+
+        {totalPages > 1 && (
+          <span className="batch-results-page-status">
+            Page {page} of{" "}
+            {totalPages}
+          </span>
+        )}
       </div>
 
-      <div className="table-wrapper">
-        <table className="results-table">
+      <div className="batch-table-wrapper">
+        <table className="batch-results-table">
+          <colgroup>
+            <col className="batch-col-index" />
+            <col className="batch-col-review" />
+            <col className="batch-col-sentiment" />
+            <col className="batch-col-rating" />
+            <col className="batch-col-emotion" />
+            <col className="batch-col-aspect" />
+            <col className="batch-col-quality" />
+          </colgroup>
+
           <thead>
             <tr>
-              <th>#</th>
-              <th>Review</th>
-              <th>Sentiment</th>
-              <th>Rating</th>
-              <th>Emotion</th>
-              <th>Primary Aspect</th>
-              <th>Quality</th>
+              <th scope="col">#</th>
+
+              <th scope="col">
+                Review
+              </th>
+
+              <th scope="col">
+                Sentiment
+              </th>
+
+              <th scope="col">
+                Rating
+              </th>
+
+              <th scope="col">
+                Emotion
+              </th>
+
+              <th scope="col">
+                Primary Aspect
+              </th>
+
+              <th scope="col">
+                Quality
+              </th>
             </tr>
           </thead>
 
           <tbody>
             {currentRows.map(
-              (result, index) => (
-                <tr
-                  key={`${page}-${index}`}
-                >
-                  <td>
-                    {(page - 1) *
-                      PAGE_SIZE +
-                      index +
-                      1}
-                  </td>
+              (result, index) => {
+                const rowNumber =
+                  (page - 1) *
+                    PAGE_SIZE +
+                  index +
+                  1;
 
-                  <td className="review-cell">
-                    {result.review_text}
-                  </td>
+                const sentiment =
+                  getDisplayValue(
+                    result?.sentiment
+                      ?.label
+                  );
 
-                  <td>
-                    <span
-                      className={`sentiment-badge sentiment-${(
-                        result.sentiment
-                          ?.label || ""
-                      ).toLowerCase()}`}
-                    >
+                const rating =
+                  result?.rating
+                    ?.prediction;
+
+                const emotion =
+                  getDisplayValue(
+                    result?.emotion
+                      ?.dominant
+                  );
+
+                const quality =
+                  getDisplayValue(
+                    result?.quality
+                      ?.status
+                  );
+
+                return (
+                  <tr
+                    key={`${page}-${rowNumber}`}
+                  >
+                    <td className="batch-row-number">
+                      {rowNumber}
+                    </td>
+
+                    <td className="batch-review-cell">
                       {
-                        result.sentiment
-                          ?.label
+                        result.review_text
                       }
-                    </span>
-                  </td>
+                    </td>
 
-                  <td>
-                    {
-                      result.rating
-                        ?.prediction
-                    }
-                    /5
-                  </td>
+                    <td>
+                      <span
+                        className={`sentiment-badge sentiment-${String(
+                          sentiment
+                        ).toLowerCase()}`}
+                      >
+                        {sentiment}
+                      </span>
+                    </td>
 
-                  <td>
-                    {
-                      result.emotion
-                        ?.dominant
-                    }
-                  </td>
+                    <td className="batch-rating-cell">
+                      {rating !== null &&
+                      rating !==
+                        undefined
+                        ? `${rating}/5`
+                        : "-"}
+                    </td>
 
-                  <td>
-                    {getPrimaryAspect(
-                      result
-                    )}
-                  </td>
+                    <td>
+                      {emotion}
+                    </td>
 
-                  <td>
-                    {
-                      result.quality
-                        ?.status
-                    }
-                  </td>
-                </tr>
-              )
+                    <td>
+                      {getPrimaryAspect(
+                        result
+                      )}
+                    </td>
+
+                    <td>
+                      {quality}
+                    </td>
+                  </tr>
+                );
+              }
             )}
           </tbody>
         </table>
@@ -121,9 +213,16 @@ export default function BatchResultsTable({
       {totalPages > 1 && (
         <div className="pagination">
           <button
+            type="button"
+            className="button button-secondary"
             disabled={page === 1}
             onClick={() =>
-              setPage((p) => p - 1)
+              setPage((current) =>
+                Math.max(
+                  1,
+                  current - 1
+                )
+              )
             }
           >
             Previous
@@ -135,11 +234,18 @@ export default function BatchResultsTable({
           </span>
 
           <button
+            type="button"
+            className="button button-secondary"
             disabled={
               page === totalPages
             }
             onClick={() =>
-              setPage((p) => p + 1)
+              setPage((current) =>
+                Math.min(
+                  totalPages,
+                  current + 1
+                )
+              )
             }
           >
             Next

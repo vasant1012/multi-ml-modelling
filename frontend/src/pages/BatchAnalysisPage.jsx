@@ -5,7 +5,6 @@ import BatchValidationSummary from "../components/batch/BatchValidationSummary";
 import BatchPreviewTable from "../components/batch/BatchPreviewTable";
 import BatchResultsTable from "../components/batch/BatchResultsTable";
 import BatchDownloadActions from "../components/batch/BatchDownloadActions";
-import BatchSummaryCards from "../components/batch/BatchSummaryCards";
 
 import useBatchAnalysis from "../hooks/useBatchAnalysis";
 
@@ -19,25 +18,10 @@ import {
 } from "../utils/storage";
 
 export default function BatchAnalysisPage() {
-  const [
-    fileName,
-    setFileName
-  ] = useState("");
-
-  const [
-    rows,
-    setRows
-  ] = useState([]);
-
-  const [
-    errors,
-    setErrors
-  ] = useState([]);
-
-  const [
-    columns,
-    setColumns
-  ] = useState([]);
+  const [fileName, setFileName] = useState("");
+  const [rows, setRows] = useState([]);
+  const [errors, setErrors] = useState([]);
+  const [columns, setColumns] = useState([]);
 
   const {
     status,
@@ -50,35 +34,23 @@ export default function BatchAnalysisPage() {
 
   async function handleFile(file) {
     try {
-      const parsed =
-        await parseCsv(file);
-
-      const validation =
-        validateCsv(parsed);
+      const parsed = await parseCsv(file);
+      const validation = validateCsv(parsed);
 
       setFileName(file.name);
-
-      setRows(
-        validation.rows || []
-      );
-
-      setErrors(
-        validation.errors || []
-      );
-
-      setColumns(
-        validation.columns || []
-      );
+      setRows(validation.rows || []);
+      setErrors(validation.errors || []);
+      setColumns(validation.columns || []);
 
       resetBatch();
     } catch (err) {
+      setFileName(file?.name || "");
+      setRows([]);
+      setColumns([]);
       setErrors([
         err.message ||
           "Failed to parse CSV file."
       ]);
-
-      setRows([]);
-      setColumns([]);
 
       resetBatch();
     }
@@ -89,8 +61,7 @@ export default function BatchAnalysisPage() {
       return;
     }
 
-    const batchResults =
-      await run(rows);
+    const batchResults = await run(rows);
 
     if (
       Array.isArray(batchResults) &&
@@ -112,9 +83,13 @@ export default function BatchAnalysisPage() {
     resetBatch();
   }
 
+  const hasResults =
+    status === "success" &&
+    results.length > 0;
+
   return (
-    <div className="analysis-page">
-      <div className="review-workspace">
+    <div className="batch-page">
+      <section className="batch-control-grid">
         <BatchUploadPanel
           fileName={fileName}
           onFileSelect={handleFile}
@@ -124,71 +99,54 @@ export default function BatchAnalysisPage() {
         <BatchValidationSummary
           fileName={fileName}
           rowCount={rows.length}
-          columnCount={
-            columns.length
-          }
+          columnCount={columns.length}
           validRows={rows.length}
-          errorCount={
-            errors.length
-          }
+          errorCount={errors.length}
         />
 
-        <div className="card">
+        <div className="card batch-actions-card">
           <h3>Batch Actions</h3>
 
-          <button
-            className="primary-btn"
-            disabled={
-              !rows.length ||
-              status === "loading"
-            }
-            onClick={analyzeBatch}
-          >
-            {status === "loading"
-              ? "Analyzing..."
-              : "Analyze Batch"}
-          </button>
+          <div className="batch-actions-content">
+            <button
+              type="button"
+              className="primary-btn"
+              disabled={
+                !rows.length ||
+                errors.length > 0 ||
+                status === "loading"
+              }
+              onClick={analyzeBatch}
+            >
+              {status === "loading"
+                ? "Analyzing..."
+                : "Analyze Batch"}
+            </button>
 
-          {status === "success" && (
-            <p className="success-text">
-              Analysis completed for{" "}
-              {summary?.totalReviews ||
-                0}{" "}
-              reviews.
-            </p>
-          )}
+            {status === "success" && (
+              <p className="success-text">
+                Analysis completed for{" "}
+                {summary?.totalReviews || 0}{" "}
+                reviews.
+              </p>
+            )}
 
-          {error && (
-            <p className="error-text">
-              {error}
-            </p>
-          )}
-        </div>
+            {error && (
+              <p className="error-text">
+                {error}
+              </p>
+            )}
 
-        {status === "success" &&
-          results.length > 0 && (
-            <BatchDownloadActions
-              results={results}
-            />
-          )}
-      </div>
-
-      <section className="intelligence-workspace">
-        {!fileName && (
-          <div className="placeholder-page">
-            <h2>
-              Upload a CSV File
-            </h2>
-
-            <p>
-              Upload a CSV containing
-              hotel reviews to validate,
-              preview, and analyze in
-              bulk.
-            </p>
+            {hasResults && (
+              <BatchDownloadActions
+                results={results}
+              />
+            )}
           </div>
-        )}
+        </div>
+      </section>
 
+      <section className="batch-results-workspace">
         {!!errors.length && (
           <div className="warning-list">
             {errors.map(
@@ -201,37 +159,70 @@ export default function BatchAnalysisPage() {
           </div>
         )}
 
-        {status === "loading" && (
-          <div className="placeholder-page">
-            <h2>
-              Analyzing Reviews...
-            </h2>
+        {!fileName && (
+          <div className="batch-empty-state">
+            <h2>Upload a CSV File</h2>
 
             <p>
-              Running batch analysis
-              through the Hotel Review
-              Intelligence engine.
+              Upload a CSV containing hotel
+              reviews to validate, preview,
+              and analyze in bulk.
             </p>
           </div>
         )}
 
-        {status === "success" && (
-          <>
-            <BatchSummaryCards
-              results={results}
-            />
+        {fileName &&
+          !rows.length &&
+          !errors.length && (
+            <div className="batch-empty-state">
+              <h2>No Reviews Available</h2>
 
-            <BatchResultsTable
-              results={results}
-            />
-          </>
+              <p>
+                The uploaded CSV does not
+                contain any review records
+                ready for analysis.
+              </p>
+            </div>
+          )}
+
+        {status === "loading" && (
+          <div className="batch-processing-state">
+            <h2>Analyzing Reviews...</h2>
+
+            <p>
+              Running batch analysis through
+              the Hotel Review Intelligence
+              engine.
+            </p>
+          </div>
         )}
 
-        {status !== "success" &&
+        {status !== "loading" &&
+          status !== "success" &&
           rows.length > 0 && (
             <BatchPreviewTable
               rows={rows}
             />
+          )}
+
+        {hasResults && (
+          <BatchResultsTable
+            results={results}
+          />
+        )}
+
+        {status === "success" &&
+          !results.length && (
+            <div className="batch-empty-state">
+              <h2>
+                No Analysis Results
+              </h2>
+
+              <p>
+                Batch processing completed
+                without any result records.
+              </p>
+            </div>
           )}
       </section>
     </div>
