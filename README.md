@@ -95,11 +95,11 @@ The Analyze workspace combines the review input with sentiment, predicted rating
 
 ### Ready state
 
-![Analyze workspace ready state](docs/analyze-tab-part1.png)
+<img width="943" height="500" alt="analyze-tab-part1" src="https://github.com/user-attachments/assets/cb2517b4-b4d5-47ef-b608-fd782757afac" />
 
 ### Intelligence results
 
-![Analyze workspace intelligence results](docs/analyze-tab-part2.png)
+<img width="943" height="499" alt="analyze-tab-part2" src="https://github.com/user-attachments/assets/bc64dc21-1894-4bb9-a55e-ecc56a627883" />
 
 The interface keeps the original review visible while the intelligence workspace exposes confidence-aware metrics, aspect-level sentiment, management summaries, improvement opportunities, and supporting evidence.
 
@@ -113,11 +113,11 @@ Upload → Validate → Preview → Analyze → Inspect → Download
 
 ### Before processing
 
-![Batch analysis before processing](docs/batch-tab-before-response.png)
+<img width="956" height="497" alt="batch-tab-before-response" src="https://github.com/user-attachments/assets/734b4b63-0fa4-4f9d-9fdc-41c318c91a5b" />
 
 ### After processing
 
-![Batch analysis results](docs/batch-tab-after-response.png)
+<img width="947" height="504" alt="batch-tab-after-response" src="https://github.com/user-attachments/assets/9d59b2bd-1855-46c3-9c51-7d17de820879" />
 
 The batch workspace validates the uploaded CSV, reports usable rows, processes the review set through the existing batch API, presents full-width structured results, and supports CSV export.
 
@@ -127,11 +127,11 @@ The Insights dashboard converts the latest completed batch into management-orien
 
 ### KPI overview
 
-![Portfolio insights KPI overview](docs/insights-tab-part1.png)
+<img width="941" height="490" alt="insights-tab-part1" src="https://github.com/user-attachments/assets/601b6f6c-b06f-4646-be16-0e4cf46b4afb" />
 
 ### Visual intelligence
 
-![Portfolio insights visual analytics](docs/insights-tab-part2.png)
+<img width="941" height="502" alt="insights-tab-part2" src="https://github.com/user-attachments/assets/498b7ed6-9c66-419a-9943-4d961e0ccde8" />
 
 The dashboard includes sentiment distribution, rating distribution, emotion distribution, positive-vs-negative aspect intelligence, portfolio KPIs, and an executive summary derived from the same shared analytics layer.
 
@@ -139,15 +139,16 @@ The dashboard includes sentiment distribution, rating distribution, emotion dist
 
 History stores recent individual analyses in the browser. Selecting a record restores the original review and its prior intelligence output in the Analyze workspace without rerunning inference.
 
-![Analysis history](docs/hostory-tab.png)
+<img width="945" height="501" alt="hostory-tab" src="https://github.com/user-attachments/assets/d1e56fad-973a-497a-a6dd-2e4508df7a75" />
 
 ## Light and Dark Themes
 
 The workspace supports both dark and light themes and a collapsible sidebar for more working space.
+### Light mode with sidebar opened
+<img width="944" height="503" alt="home-screen-dark-mode-with-sidebar-opened" src="https://github.com/user-attachments/assets/e51fea13-21d7-4064-b622-437a69fbb684" />
 
-![Dark mode with expanded navigation](docs/home-screen-dark-mode-with-sidebar-opened.png)
-
-![Light mode with collapsed navigation](docs/home-screen-white-mode-with-sidebar-compressed.png)
+### Dark mode with sidebar compressed
+<img width="943" height="501" alt="home-screen-white-mode-with-sidebar-compressed" src="https://github.com/user-attachments/assets/486e448b-fc6c-4b89-95e3-4213ccbe38af" />
 
 ---
 
