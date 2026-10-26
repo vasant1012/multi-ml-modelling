@@ -1,0 +1,1 @@
+export default function Skeleton(){return <div className="skeleton-stack"><div className="skeleton metric-skeleton"/><div className="skeleton metric-skeleton"/><div className="skeleton body-skeleton"/><div className="skeleton body-skeleton"/></div>}

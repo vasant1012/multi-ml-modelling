@@ -1,0 +1,16 @@
+{
+    "total_records": 20491,
+    "average_word_count": 104.38,
+    "rating_distribution": {
+        "1": 1421,
+        "2": 1793,
+        "3": 2184,
+        "4": 6039,
+        "5": 9054
+    },
+    "sentiment_distribution": {
+        "positive": 15093,
+        "negative": 3214,
+        "neutral": 2184
+    }
+}

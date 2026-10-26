@@ -1,0 +1,1 @@
+export default function ProgressBar({value,tone="primary"}){return <div className="progress" aria-label={`${Math.round(value*100)} percent`}><span className={`progress-${tone}`} style={{width:`${Math.max(0,Math.min(100,value*100))}%`}}/></div>}

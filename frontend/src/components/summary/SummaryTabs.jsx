@@ -1,0 +1,1 @@
+const tabs=[["guest_summary","Guest"],["management_summary","Management"],["executive_summary","Executive"]];export default function SummaryTabs({active,onChange}){return <div className="tabs" role="tablist">{tabs.map(([key,label])=><button role="tab" aria-selected={active===key} className={active===key?"active":""} key={key} onClick={()=>onChange(key)}>{label}</button>)}</div>}
