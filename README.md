@@ -144,10 +144,10 @@ History stores recent individual analyses in the browser. Selecting a record res
 ## Light and Dark Themes
 
 The workspace supports both dark and light themes and a collapsible sidebar for more working space.
-### Light mode with sidebar opened
+### Light mode with sidebar compressed
 <img width="943" height="501" alt="home-screen-white-mode-with-sidebar-compressed" src="https://github.com/user-attachments/assets/486e448b-fc6c-4b89-95e3-4213ccbe38af" />
 
-### Dark mode with sidebar compressed
+### Dark mode with sidebar opened
 <img width="944" height="503" alt="home-screen-dark-mode-with-sidebar-opened" src="https://github.com/user-attachments/assets/e51fea13-21d7-4064-b622-437a69fbb684" />
 
 ---
